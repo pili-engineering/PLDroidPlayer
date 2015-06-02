@@ -1,10 +1,10 @@
-# PiliPlayer
-PiliPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SDK，旨在解决快速、轻松实现 Android 设备播放直播流，便于 pili 流媒体云服务的开发者专注于产品业务本身，而不必在技术细节上花费不必要的时间。
+# PLDroidPlayer
+PLDroidPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SDK，旨在解决快速、轻松实现 Android 设备播放直播流，便于 pili 流媒体云服务的开发者专注于产品业务本身，而不必在技术细节上花费不必要的时间。
 
 # 内容摘要
 - [Feature List](#Feature-List)
 - [SDK](#SDK)
-- [为什么选择 PiliPlayer](#为什么选择-PiliPlayer)
+- [为什么选择 PLDroidPlayer](#为什么选择-PLDroidPlayer)
 - [使用方法](#使用方法)
     - [配置工程](#项目配置)
     - [示例代码](#示例代码)
@@ -29,8 +29,8 @@ public void setAnchorView(View view);
 ```
 * VideoView 与 MediaController 通过 MediaPlayerControl 建立了调用关系。
 
-## 为什么选择 PiliPlayer
-| -  | ijkplayer | PiliPlayer |
+## 为什么选择 PLDroidPlayer
+| -  | ijkplayer | PLDroidPlayer |
 |---|---|---|
 |Shared Library Size|较大|较小|
 |依赖 Shared Library 的数量|5个|1个|
@@ -39,7 +39,7 @@ public void setAnchorView(View view);
 
 ## 使用方法
 ### 项目配置
-从 releases 目录下载 **piliplayer-xxx.jar**, **ijkmediaplayer-xxx.jar**,以及 **armeabi-v7a/libpiliplayer.so** 或 **x86/libpiliplayer.so**，并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PiliPlayerDemo][3] 中的做法。
+从 releases 目录下载 **pldroid-player-xxx.jar**, **ijkmediaplayer-xxx.jar**,以及 **armeabi-v7a/libpldroidplayer.so** 或 **x86/libpldroidplayer.so**，并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PiliPlayerDemo][3] 中的做法。
 
 ### 示例代码
 #### 初始化 VideoView 及其布局
