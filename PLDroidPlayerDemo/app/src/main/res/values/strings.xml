@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PLDroidPlayerDemo</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="choose_ok">OK</string>
+    <string name="input_title">Input Url:</string>
+    <string name="back_title">BACK</string>
+    <string name="change_title">Change</string>
+    <string name="buffering">Buffering</string>
+</resources>
