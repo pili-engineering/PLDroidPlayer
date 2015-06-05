@@ -11,7 +11,7 @@ PLDroidPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SD
 - [版本历史](#版本历史)
 
 ## 功能特性
-1. 基于 ijkplayer
+1. 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
 2. Android Min API 9
 3. 支持 RTMP, HLS 协议
 4. 支持 ARMv7a
@@ -33,12 +33,18 @@ PLDroidPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SD
 |---|---|---|
 |Shared Library Size|较大|较小|
 |Shared Library Count|5个|1个|
-|widget|有商业授权风险|无商业授权风险|
+|Widget|有商业授权风险|无商业授权风险|
 |MediaController|难以定制化|容易定制化|
 
 ## 使用方法
 ### 项目配置
-从 releases 目录下载 **pldroid-player-xxx.jar**, **ijkmediaplayer-xxx.jar**,以及 **armeabi-v7a/libpldroidplayer.so**，并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PLDroidPlayerDemo][1] 中的做法。
+从 `releases/` 目录获取：
+
+- pldroid-player-xxx.jar 
+- ijkmediaplayer-xxx.jar
+- armeabi-v7a/libpldroidplayer.so
+
+并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PLDroidPlayerDemo][1] 中的做法。
 
 ### 示例代码
 
@@ -60,7 +66,7 @@ PLDroidPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SD
   mVideoView.setMediaController(mMediaController);
 ```
 
-3 传入播放地址，可以是 /path/to/local.mp4 本地文件绝对路径，或 HLS URL，或 RTMP URL
+3 传入播放地址，可以是 `/path/to/local.mp4` 本地文件绝对路径，或 HLS URL，或 RTMP URL
 ```JAVA
   mVideoView.setVideoPath(mVideoPath);
 ```
@@ -95,7 +101,7 @@ public boolean onInfo(IMediaPlayer mp, int what, int extra) {
 }
 
 @Override
-public void onPrepared(IMediaPlayer mph) {
+public void onPrepared(IMediaPlayer mp) {
   ...
 }
 ```
@@ -109,7 +115,7 @@ public void onPrepared(IMediaPlayer mph) {
 ## 版本历史
 * 1.0.0 ([Release Notes][2])
 
-发布PLDroidPlayer v1.0.0
+发布 PLDroidPlayer v1.0.0
 
 [1]: /PLDroidPlayerDemo
 [2]: /ReleaseNotes/release-notes-1.0.0.md
