@@ -1,5 +1,5 @@
 # PLDroidPlayer
-PLDroidPlayer 是为 pili 流媒体云服务提供的一套播放直播流的 SDK，旨在解决快速、轻松实现 Android 设备播放直播流，便于 pili 流媒体云服务的开发者专注于产品业务本身，而不必在技术细节上花费不必要的时间。
+PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度定制化和二次开发，特色是支持 RTMP 和 HLS 直播流媒体、以及常见音视频文件（如 MP4、M4A ）播放。
 
 # 内容摘要
 - [功能特性](#功能特性)
