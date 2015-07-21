@@ -7,7 +7,7 @@ import android.net.Uri;
  */
 public class Util {
     public static boolean isUrlLocalFile(String path) {
-        return getPathScheme(path) == null || "file//".equals(getPathScheme(path));
+        return getPathScheme(path) == null || "file".equals(getPathScheme(path));
     }
 
     public static String getPathScheme(String path) {

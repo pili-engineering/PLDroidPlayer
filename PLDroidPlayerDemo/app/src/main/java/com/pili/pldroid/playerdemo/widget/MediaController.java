@@ -43,7 +43,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private boolean mShowing;
     private boolean mDragging;
     private boolean mInstantSeeking = true;
-    private static final int sDefaultTimeout = 3000;
+    private static int sDefaultTimeout = 3000;
     private static final int SEEK_TO_POST_DELAY_MILLIS = 200;
 
     private static final int FADE_OUT = 1;
@@ -72,6 +72,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private AudioManager mAM;
     private Runnable mLastSeekBarRunnable;
     private boolean mDisableProgress = false;
+
 
     public MediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -361,6 +362,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     }
 
     private SeekBar.OnSeekBarChangeListener mSeekListener = new SeekBar.OnSeekBarChangeListener() {
+
         public void onStartTrackingTouch(SeekBar bar) {
             mDragging = true;
             show(3600000);
@@ -424,8 +426,10 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     /**
-     * Set the view that acts as the anchor for the control view. This can for
-     * example be a VideoView, or your Activity's main view.
+     * Set the view that acts as the anchor for the control view.
+     *
+     * - This can for example be a VideoView, or your Activity's main view.
+     * - AudioPlayer has no anchor view, so the view parameter will be null.
      *
      * @param view
      * The view to which to anchor the controller when it is visible.
@@ -433,6 +437,9 @@ public class MediaController extends FrameLayout implements IMediaController {
     @Override
     public void setAnchorView(View view) {
         mAnchor = view;
+        if (mAnchor == null) {
+            sDefaultTimeout = 0; // show forever
+        }
         if (!mFromXml) {
             removeAllViews();
             mRoot = makeControllerView();
@@ -463,9 +470,11 @@ public class MediaController extends FrameLayout implements IMediaController {
      */
     @Override
     public void show(int timeout) {
-        if (!mShowing && mAnchor != null && mAnchor.getWindowToken() != null) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-                mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        if (!mShowing) {
+            if (mAnchor != null && mAnchor.getWindowToken() != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+                }
             }
             if (mPauseButton != null)
                 mPauseButton.requestFocus();
@@ -476,14 +485,24 @@ public class MediaController extends FrameLayout implements IMediaController {
             } else {
                 int[] location = new int[2];
 
-                mAnchor.getLocationOnScreen(location);
-                Rect anchorRect = new Rect(location[0], location[1],
-                        location[0] + mAnchor.getWidth(), location[1]
-                        + mAnchor.getHeight());
+                if (mAnchor != null) {
+                    mAnchor.getLocationOnScreen(location);
+                    Rect anchorRect = new Rect(location[0], location[1],
+                            location[0] + mAnchor.getWidth(), location[1]
+                            + mAnchor.getHeight());
 
-                mWindow.setAnimationStyle(mAnimStyle);
-                mWindow.showAtLocation(mAnchor, Gravity.BOTTOM,
-                        anchorRect.left, 0);
+                    mWindow.setAnimationStyle(mAnimStyle);
+                    mWindow.showAtLocation(mAnchor, Gravity.BOTTOM,
+                            anchorRect.left, 0);
+                } else {
+                    Rect anchorRect = new Rect(location[0], location[1],
+                            location[0] + mRoot.getWidth(), location[1]
+                            + mRoot.getHeight());
+
+                    mWindow.setAnimationStyle(mAnimStyle);
+                    mWindow.showAtLocation(mRoot, Gravity.BOTTOM,
+                            anchorRect.left, 0);
+                }
             }
             mShowing = true;
             if (mShownListener != null)
@@ -506,12 +525,11 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     @Override
     public void hide() {
-        if (mAnchor == null)
-            return;
-
         if (mShowing) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH){
-                mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            if (mAnchor != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                    mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                }
             }
             try {
                 mHandler.removeMessages(SHOW_PROGRESS);

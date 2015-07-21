@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.pili.pldroid.player.AudioPlayer;
 import com.pili.pldroid.player.PlayerCode;
-import com.pili.pldroid.player.widget.VideoView;
 import com.pili.pldroid.playerdemo.R;
 import com.pili.pldroid.playerdemo.common.Util;
 import com.pili.pldroid.playerdemo.widget.MediaController;
@@ -18,19 +19,19 @@ import com.pili.pldroid.playerdemo.widget.MediaController;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
-public class VideoPlayerActivity extends Activity implements
+public class AudioPlayerActivity extends Activity implements
         IjkMediaPlayer.OnCompletionListener,
         IjkMediaPlayer.OnInfoListener,
         IjkMediaPlayer.OnErrorListener,
         IjkMediaPlayer.OnPreparedListener {
-    private static final String TAG = "VideoPlayerActivity";
+    private static final String TAG = "AudioPlayerActivity";
     private static final int REQ_DELAY_MILLS = 3000;
 
-    private VideoView mVideoView;
     private View mBufferingIndicator;
     private MediaController mMediaController;
+    private AudioPlayer mAudioPlayer;
 
-    private String mVideoPath;
+    private String mAudioPath;
     private Button mBackBtn;
     private long mLastPosition = 0;
     private boolean mIsLiveStream = false;
@@ -45,48 +46,44 @@ public class VideoPlayerActivity extends Activity implements
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_player);
 
-        mVideoPath = getIntent().getStringExtra("videoPath");
+        mAudioPath = getIntent().getStringExtra("audioPath");
 
         Intent intent = getIntent();
         String intentAction = intent.getAction();
         if (!TextUtils.isEmpty(intentAction) && intentAction.equals(Intent.ACTION_VIEW)) {
-            mVideoPath = intent.getDataString();
+            mAudioPath = intent.getDataString();
         }
 
         mBackBtn = (Button) findViewById(R.id.back_btn);
         mBackBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mVideoView.stopPlayback();
                 onBackPressed();
                 finish();
             }
         });
         mBufferingIndicator = findViewById(R.id.buffering_indicator);
+
         boolean useFastForward = true;
         boolean disableProgressBar = false;
-
         // Tip: you can custom the variable depending on your situation
-        mIsLiveStream = !Util.isUrlLocalFile(mVideoPath);
+        mIsLiveStream = !Util.isUrlLocalFile(mAudioPath);
         if (mIsLiveStream) {
             disableProgressBar = true;
             useFastForward = false;
         }
         mMediaController = new MediaController(this, useFastForward, disableProgressBar);
+        mAudioPlayer = new AudioPlayer(this);
 
-        mVideoView = (VideoView) findViewById(R.id.video_view);
-        mMediaController.setMediaPlayer(mVideoView);
-        mVideoView.setMediaController(mMediaController);
-//        mVideoView.setMediaBufferingIndicator(mBufferingIndicator);
-        mVideoView.setVideoPath(mVideoPath);
+        mMediaController.setMediaPlayer(mAudioPlayer);
+        mAudioPlayer.setMediaController(mMediaController);
+        mAudioPlayer.setOnErrorListener(this);
+        mAudioPlayer.setOnCompletionListener(this);
+        mAudioPlayer.setOnInfoListener(this);
+        mAudioPlayer.setOnPreparedListener(this);
+        mAudioPlayer.setAudioPath(mAudioPath);
 
-        mVideoView.setOnErrorListener(this);
-        mVideoView.setOnCompletionListener(this);
-        mVideoView.setOnInfoListener(this);
-        mVideoView.setOnPreparedListener(this);
-
-        mVideoView.requestFocus();
-        mVideoView.start();
+        mAudioPlayer.start();
         mBufferingIndicator.setVisibility(View.VISIBLE);
     }
 
@@ -108,14 +105,12 @@ public class VideoPlayerActivity extends Activity implements
             }
             if (mIsCompleted && extra == PlayerCode.EXTRA_CODE_EMPTY_PLAYLIST) {
                 Log.d(TAG, "mVideoView reconnect!!!");
-                mVideoView.removeCallbacks(mVideoReconnect);
                 mVideoReconnect = new Runnable() {
                     @Override
                     public void run() {
-                        mVideoView.setVideoPath(mVideoPath);
+                        mAudioPlayer.setAudioPath(mAudioPath);
                     }
                 };
-                mVideoView.postDelayed(mVideoReconnect, mReqDelayMills);
                 mReqDelayMills += 200;
             } else if (extra == PlayerCode.EXTRA_CODE_404_NOT_FOUND) {
                 // NO ts exist
@@ -157,20 +152,33 @@ public class VideoPlayerActivity extends Activity implements
     public void onResume() {
         super.onResume();
         mReqDelayMills = REQ_DELAY_MILLS;
-        if (mVideoView != null && !mIsLiveStream && mLastPosition != 0) {
-            mVideoView.seekTo(mLastPosition);
-            mVideoView.start();
+        Log.i(TAG, "onResume");
+        if (mAudioPlayer != null && !mIsLiveStream && mLastPosition != 0) {
+            mAudioPlayer.seekTo(mLastPosition);
+            mAudioPlayer.start();
         }
     }
 
     @Override
     public void onPause() {
-        if (mVideoView != null) {
-            mLastPosition = mVideoView.getCurrentPosition();
-            mVideoView.pause();
-        }
+//        if (mAudioPlayer != null) {
+//            mAudioPlayer.pause();
+//            mLastPosition = mAudioPlayer.getCurrentPosition();
+//        }
+//        if (mAudioPlayer != null) {
+//            mLastPosition = mAudioPlayer.getCurrentPosition();
+//            mAudioPlayer.stopPlayback();
+//        }
         super.onPause();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(mAudioPlayer.onKeyDown(keyCode, event)) {
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
 }
