@@ -23,5 +23,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.0.0'
     compile files('libs/ijkmediaplayer.jar')
-    compile files('libs/pldroid-player-1.0.0.jar')
+    compile files('libs/pldroid-player-1.1.0.jar')
 }

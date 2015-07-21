@@ -9,4 +9,7 @@
     <string name="back_title">BACK</string>
     <string name="change_title">Change</string>
     <string name="buffering">Buffering</string>
+    <string name="title_activity_audio_player">AudioPlayerActivity</string>
+    <string name="choose_video">Video</string>
+    <string name="choose_audio">Audio</string>
 </resources>

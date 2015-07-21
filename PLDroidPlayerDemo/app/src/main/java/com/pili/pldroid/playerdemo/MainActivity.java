@@ -17,11 +17,14 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.pili.pldroid.playerdemo.R;
 
 
 public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final String MSG_NOT_ALLOW_EMPTY_URL = "Error! URL is empty!";
 
     private ListView fileListView;
 
@@ -29,7 +32,8 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
     private boolean changed = false;
     private EditText mInputUrlEditText;
-    private Button mOKBtn;
+    private Button mVideoBtn;
+    private Button mAudioBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +54,32 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
 
         mInputUrlEditText = (EditText) findViewById(R.id.input_url);
 
-        mOKBtn = (Button) findViewById(R.id.btn_ok);
-        mOKBtn.setOnClickListener(new View.OnClickListener() {
+        mVideoBtn = (Button) findViewById(R.id.btn_video);
+        mVideoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String url = mInputUrlEditText.getText().toString().trim();
+                if (url == null || url.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), MSG_NOT_ALLOW_EMPTY_URL, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent = new Intent(MainActivity.this, VideoPlayerActivity.class);
                 intent.putExtra("videoPath", url);
+                startActivity(intent);
+            }
+        });
+
+        mAudioBtn = (Button) findViewById(R.id.btn_audio);
+        mAudioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = mInputUrlEditText.getText().toString().trim();
+                if (url == null || url.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), MSG_NOT_ALLOW_EMPTY_URL, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, AudioPlayerActivity.class);
+                intent.putExtra("audioPath", url);
                 startActivity(intent);
             }
         });
@@ -76,11 +99,13 @@ public class MainActivity extends ActionBarActivity implements LoaderManager.Loa
         if (changed) {
             fileListView.setVisibility(View.GONE);
             mInputUrlEditText.setVisibility(View.VISIBLE);
-            mOKBtn.setVisibility(View.VISIBLE);
+            mAudioBtn.setVisibility(View.VISIBLE);
+            mVideoBtn.setVisibility(View.VISIBLE);
         } else {
             fileListView.setVisibility(View.VISIBLE);
             mInputUrlEditText.setVisibility(View.GONE);
-            mOKBtn.setVisibility(View.GONE);
+            mAudioBtn.setVisibility(View.GONE);
+            mVideoBtn.setVisibility(View.GONE);
         }
     }
     @Override

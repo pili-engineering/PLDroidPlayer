@@ -1,8 +1,26 @@
 # PLDroidPlayer
 PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度定制化和二次开发，特色是支持 RTMP 和 HLS 直播流媒体、以及常见音视频文件（如 MP4、M4A ）播放。
 
+# 功能特性
+1. 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
+2. Android Min API 9
+3. 支持 RTMP, HLS 协议
+4. 支持 ARMv7a
+5. 支持 MediaCodec 硬解码
+6. 支持纯音频播放，并支持后台运行
+7. 提供 `VideoView` 控件
+8. 可定制化的 `MediaController`
+9. 支持 `seekTo()`
+10. 支持获取当前播放时长 `getDuration()`
+11. 支持获取当前播放的位置 `getCurrentPosition()`
+12. 支持音量控制 `setVolume()`
+13. 提供如下接口：
+  - `OnPreparedListener`
+  - `OnCompletionListener`
+  - `OnErrorListener`
+  - `OnInfoListener`
+
 # 内容摘要
-- [功能特性](#功能特性)
 - [播放器对比](#播放器对比)
 - [使用方法](#使用方法)
     - [配置工程](#项目配置)
@@ -10,23 +28,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 - [依赖库](#依赖库)
 - [版本历史](#版本历史)
 
-## 功能特性
-1. 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
-2. Android Min API 9
-3. 支持 RTMP, HLS 协议
-4. 支持 ARMv7a
-5. 支持 MediaCodec 硬解码
-6. 提供 `VideoView` 控件
-7. 可定制化的 `MediaController`
-8. 支持 `seekTo()`
-9. 支持获取当前播放时长 `getDuration()`
-10. 支持获取当前播放的位置 `getCurrentPosition()`
-11. 支持音量控制 `setVolume()`
-12. 提供如下接口：
-  - `OnPreparedListener`
-  - `OnCompletionListener`
-  - `OnErrorListener`
-  - `OnInfoListener`
+
 
 ## 播放器对比
 | -  | ijkplayer | PLDroidPlayer |
@@ -47,6 +49,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PLDroidPlayerDemo][1] 中的做法。
 
 ### 示例代码
+#### Video 播放
 
 1 初始化 VideoView 及其布局
 ```XML
@@ -106,6 +109,31 @@ public void onPrepared(IMediaPlayer mp) {
 }
 ```
 
+#### 纯音频播放
+1 实例化 `AudioPlayer`
+```JAVA
+mAudioPlayer = new AudioPlayer(this);
+```
+
+2 `AudioPlayer` 与 `MediaController` 建立联系
+```JAVA
+mMediaController.setMediaPlayer(mAudioPlayer);
+mAudioPlayer.setMediaController(mMediaController);
+```
+
+3 传入播放地址，可以是 `/path/to/local.mp3` 本地音频文件绝对路径，或 HLS URL，或 RTMP URL
+```JAVA
+mAudioPlayer.setAudioPath(mAudioPath);
+```
+
+4 设置 Listener
+```JAVA
+mAudioPlayer.setOnErrorListener(this);
+mAudioPlayer.setOnCompletionListener(this);
+mAudioPlayer.setOnInfoListener(this);
+mAudioPlayer.setOnPreparedListener(this);
+```
+
 ## 依赖库
 * ffmpeg
 * libyuv
@@ -113,9 +141,21 @@ public void onPrepared(IMediaPlayer mp) {
 * libVLC
 
 ## 版本历史
-* 1.0.0 ([Release Notes][2])
+* 1.1.0 ([Release Notes][3])
+  - 发布 pldroid-player-1.1.0.jar
+  - 更新 ijkmediaplayer.jar
+  - 更新 libpldroidplayer.so
+  - 添加纯音频播放接口，支持后台运行
+  - 添加 bufferTime 设置接口：`setBufferTime(float ms)`
+  - 添加状态码：`EXTRA_CODE_CONNECTION_REFUSED` 和 `EXTRA_CODE_EOF`
+  - 优化播放延时
+  - 优化播放过程中因断流导致的等待时间
+  - 修复部分机型硬解码异常问题
+  - 添加纯音频播放展示界面
 
-发布 PLDroidPlayer v1.0.0
+* 1.0.0 ([Release Notes][2])
+  - 发布 PLDroidPlayer v1.0.0
 
 [1]: /PLDroidPlayerDemo
 [2]: /ReleaseNotes/release-notes-1.0.0.md
+[3]: /ReleaseNotes/release-notes-1.1.0.md
