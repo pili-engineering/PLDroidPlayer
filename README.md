@@ -2,23 +2,23 @@
 PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度定制化和二次开发，特色是支持 RTMP 和 HLS 直播流媒体、以及常见音视频文件（如 MP4、M4A ）播放。
 
 # 功能特性
-1. 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
-2. Android Min API 9
-3. 支持 RTMP, HLS 协议
-4. 支持 ARMv7a
-5. 支持 MediaCodec 硬解码
-6. 支持纯音频播放，并支持后台运行
-7. 提供 `VideoView` 控件
-8. 可定制化的 `MediaController`
-9. 支持 `seekTo()`
-10. 支持获取当前播放时长 `getDuration()`
-11. 支持获取当前播放的位置 `getCurrentPosition()`
-12. 支持音量控制 `setVolume()`
-13. 提供如下接口：
-  - `OnPreparedListener`
-  - `OnCompletionListener`
-  - `OnErrorListener`
-  - `OnInfoListener`
+  - [x] 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
+  - [x]  Android Min API 9
+  - [x] 支持 RTMP, HLS 协议
+  - [x] 支持 ARM v7a, ARM64 v8a
+  - [x] 支持 MediaCodec 硬解码
+  - [x] 支持纯音频播放，并支持后台运行
+  - [x] 提供 `VideoView` 控件
+  - [x] 可定制化的 `MediaController`
+  - [x] 支持 `seekTo()`
+  - [x] 支持获取当前播放时长 `getDuration()`
+  - [x] 支持获取当前播放的位置 `getCurrentPosition()`
+  - [x] 支持音量控制 `setVolume()`
+  - [x] 提供如下接口：
+    - `OnPreparedListener`
+    - `OnCompletionListener`
+    - `OnErrorListener`
+    - `OnInfoListener`
 
 # 内容摘要
 - [播放器对比](#播放器对比)
@@ -141,6 +141,21 @@ mAudioPlayer.setOnPreparedListener(this);
 * libVLC
 
 ## 版本历史
+* 1.1.0 ([Release Notes][4])
+  - 发布 pldroid-player-1.1.1.jar 
+  - 发布 arm64-v8a/libpldroidplayer.so，增加 arm64 v8a 支持
+  - 更新 arm-v7a 版本的 libpldroidplayer.so
+  - 增加 `AVOptions` 类，可设置如下属性：
+    * `AVOptions.KEY_GET_AV_FRAME_TIMEOUT`  // ms
+    * `AVOptions.KEY_MEDIACODEC`            // 1 means enable, 0 means disable
+    * `AVOptions.KEY_FFLAGS`                // "nobuffer"
+    * `AVOptions.KEY_BUFFER_TIME`           // ms
+  - 修复部分音视频流无法播放的问题
+  - 修复仅含视频流无法播放的问题
+  - 优化连接时间
+  - 废除 `setBufferTime(float ms)` 接口，使用 `AVOptions` 代替
+  - 增加 `AVOptions` 的演示代码
+
 * 1.1.0 ([Release Notes][3])
   - 发布 pldroid-player-1.1.0.jar
   - 更新 ijkmediaplayer.jar
@@ -159,3 +174,4 @@ mAudioPlayer.setOnPreparedListener(this);
 [1]: /PLDroidPlayerDemo
 [2]: /ReleaseNotes/release-notes-1.0.0.md
 [3]: /ReleaseNotes/release-notes-1.1.0.md
+[4]: /ReleaseNotes/release-notes-1.1.1.md

@@ -165,10 +165,10 @@ public class AudioPlayerActivity extends Activity implements
 //            mAudioPlayer.pause();
 //            mLastPosition = mAudioPlayer.getCurrentPosition();
 //        }
-//        if (mAudioPlayer != null) {
-//            mLastPosition = mAudioPlayer.getCurrentPosition();
-//            mAudioPlayer.stopPlayback();
-//        }
+        if (mAudioPlayer != null) {
+            mLastPosition = mAudioPlayer.getCurrentPosition();
+            mAudioPlayer.stopPlayback();
+        }
         super.onPause();
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
