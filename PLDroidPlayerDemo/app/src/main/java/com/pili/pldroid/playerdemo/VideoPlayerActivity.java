@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PlayerCode;
 import com.pili.pldroid.player.widget.VideoView;
 import com.pili.pldroid.playerdemo.R;
@@ -80,6 +81,13 @@ public class VideoPlayerActivity extends Activity implements
 //        mVideoView.setMediaBufferingIndicator(mBufferingIndicator);
         mVideoView.setVideoPath(mVideoPath);
 
+        AVOptions options = new AVOptions();
+        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000); // the unit of timeout is ms
+        options.setInteger(AVOptions.KEY_MEDIACODEC, 1); // 1 -> enable, 0 -> disable
+        options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+        options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+        mVideoView.setAVOptions(options);
+
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnInfoListener(this);
@@ -94,6 +102,7 @@ public class VideoPlayerActivity extends Activity implements
     public void onCompletion(IMediaPlayer mp) {
         Log.d(TAG, "onCompletion");
         mIsCompleted = true;
+        mMediaController.onCompletion();
         mBufferingIndicator.setVisibility(View.GONE);
     }
 

@@ -56,6 +56,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private ImageButton mPrevButton;
 
     private boolean mUseFastForward;
+    private boolean mIsOnCompleted = false;
 
     private static final int IC_MEDIA_PAUSE_ID = Resources.getSystem().getIdentifier("ic_media_pause","drawable", "android");
     private static final int IC_MEDIA_PLAY_ID = Resources.getSystem().getIdentifier("ic_media_play","drawable", "android");
@@ -246,7 +247,7 @@ public class MediaController extends FrameLayout implements IMediaController {
                     break;
                 case SHOW_PROGRESS:
                     pos = setProgress();
-                    if (!mDragging && mShowing) {
+                    if (!mDragging && mShowing && !mIsOnCompleted) {
                         msg = obtainMessage(SHOW_PROGRESS);
                         sendMessageDelayed(msg, 1000 - (pos % 1000));
                         updatePausePlay();
@@ -257,7 +258,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     private long setProgress() {
-        if (mPlayer == null || mDragging)
+        if (mPlayer == null || mDragging || mIsOnCompleted)
             return 0;
 
         long position = mPlayer.getCurrentPosition();
@@ -562,4 +563,9 @@ public class MediaController extends FrameLayout implements IMediaController {
         disableUnsupportedButtons();
         super.setEnabled(enabled);
     }
+
+    public void onCompletion() {
+        mIsOnCompleted = true;
+    }
+
 }
