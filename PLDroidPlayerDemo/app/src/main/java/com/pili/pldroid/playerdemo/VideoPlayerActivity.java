@@ -79,7 +79,6 @@ public class VideoPlayerActivity extends Activity implements
         mMediaController.setMediaPlayer(mVideoView);
         mVideoView.setMediaController(mMediaController);
 //        mVideoView.setMediaBufferingIndicator(mBufferingIndicator);
-        mVideoView.setVideoPath(mVideoPath);
 
         AVOptions options = new AVOptions();
         options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000); // the unit of timeout is ms
@@ -88,13 +87,15 @@ public class VideoPlayerActivity extends Activity implements
         options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
         mVideoView.setAVOptions(options);
 
+        mVideoView.setVideoPath(mVideoPath);
+
         mVideoView.setOnErrorListener(this);
         mVideoView.setOnCompletionListener(this);
         mVideoView.setOnInfoListener(this);
         mVideoView.setOnPreparedListener(this);
 
         mVideoView.requestFocus();
-        mVideoView.start();
+//        mVideoView.start();
         mBufferingIndicator.setVisibility(View.VISIBLE);
     }
 
@@ -102,7 +103,6 @@ public class VideoPlayerActivity extends Activity implements
     public void onCompletion(IMediaPlayer mp) {
         Log.d(TAG, "onCompletion");
         mIsCompleted = true;
-        mMediaController.onCompletion();
         mBufferingIndicator.setVisibility(View.GONE);
     }
 

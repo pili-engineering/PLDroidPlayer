@@ -45,6 +45,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 - pldroid-player-xxx.jar 
 - ijkmediaplayer-xxx.jar
 - armeabi-v7a/libpldroidplayer.so
+- arm64-v8a/libpldroidplayer.so
 
 并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PLDroidPlayerDemo][1] 中的做法。
 
@@ -109,6 +110,17 @@ public void onPrepared(IMediaPlayer mp) {
 }
 ```
 
+5 设置 `AVOptions`
+```JAVA
+AVOptions options = new AVOptions();
+options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000);         // the unit of timeout is ms
+options.setInteger(AVOptions.KEY_MEDIACODEC, 1);                          // 1 -> enable, 0 -> disable
+options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000);                      // the unit of buffer time is ms
+mVideoView.setAVOptions(options);
+```
+> `AVOptions.KEY_FFLAGS` , `AVOptions.KEY_BUFFER_TIME` 仅对 RTMP 有效；`AVOptions` 需要在 `start()`/`setVideoPath()` 前设置
+
 #### 纯音频播放
 1 实例化 `AudioPlayer`
 ```JAVA
@@ -141,8 +153,15 @@ mAudioPlayer.setOnPreparedListener(this);
 * libVLC
 
 ## 版本历史
-* 1.1.0 ([Release Notes][4])
-  - 发布 pldroid-player-1.1.1.jar 
+
+* 1.1.2 ([Release Notes][5])
+  - 发布 pldroid-player-1.1.2.jar
+  - 更新 arm64-v8a/libpldroidplayer.so，armeabi-v7a/libpldroidplayer.so
+  - 修复推流端断流后，Player 概率性地无 `onCompletion` 回调通知
+  - 修复 `AVOptions` 的 key 没有设置 value 时候的 Crash 问题
+
+* 1.1.1 ([Release Notes][4])
+  - 发布 pldroid-player-1.1.1.jar
   - 发布 arm64-v8a/libpldroidplayer.so，增加 arm64 v8a 支持
   - 更新 arm-v7a 版本的 libpldroidplayer.so
   - 增加 `AVOptions` 类，可设置如下属性：
@@ -175,3 +194,4 @@ mAudioPlayer.setOnPreparedListener(this);
 [2]: /ReleaseNotes/release-notes-1.0.0.md
 [3]: /ReleaseNotes/release-notes-1.1.0.md
 [4]: /ReleaseNotes/release-notes-1.1.1.md
+[5]: /ReleaseNotes/release-notes-1.1.2.md
