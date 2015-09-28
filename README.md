@@ -5,7 +5,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
   - [x] 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )
   - [x]  Android Min API 9
   - [x] 支持 RTMP, HLS 协议
-  - [x] 支持 ARM v7a, ARM64 v8a
+  - [x] 支持 ARM, ARM v7a, ARM64 v8a, x86
   - [x] 支持 MediaCodec 硬解码
   - [x] 支持纯音频播放，并支持后台运行
   - [x] 提供 `VideoView` 控件
@@ -46,6 +46,8 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 - ijkmediaplayer-xxx.jar
 - armeabi-v7a/libpldroidplayer.so
 - arm64-v8a/libpldroidplayer.so
+- armeabi/libpldroidplayer.so
+- x86/libpldroidplayer.so
 
 并在项目中加入对应的 jar/so 文件的依赖关系。可参考 [PLDroidPlayerDemo][1] 中的做法。
 
@@ -154,6 +156,17 @@ mAudioPlayer.setOnPreparedListener(this);
 
 ## 版本历史
 
+### 播放器
+
+* 1.1.3 ([Release Notes][6])
+  - 发布 pldroid-player-1.1.3.jar
+  - 更新 libpldroidplayer.so
+  - 新增 armeabi, x86 支持
+  - 新增 `KEY_LIVE_STREAMING` option
+  - 修复 `getCurrentPosition` 和 `getDuration` 返回值异常问题
+  - 修复播放过程中，概率性不间断地回调 onCompletion 问题
+  - 更新不同播放方式（直播或点播）设置 option 的展示代码
+
 * 1.1.2 ([Release Notes][5])
   - 发布 pldroid-player-1.1.2.jar
   - 更新 arm64-v8a/libpldroidplayer.so，armeabi-v7a/libpldroidplayer.so
@@ -195,3 +208,4 @@ mAudioPlayer.setOnPreparedListener(this);
 [3]: /ReleaseNotes/release-notes-1.1.0.md
 [4]: /ReleaseNotes/release-notes-1.1.1.md
 [5]: /ReleaseNotes/release-notes-1.1.2.md
+[6]: /ReleaseNotes/release-notes-1.1.3.md
