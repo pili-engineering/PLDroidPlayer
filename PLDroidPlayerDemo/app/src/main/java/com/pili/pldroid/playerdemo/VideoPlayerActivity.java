@@ -11,9 +11,9 @@ import android.widget.Button;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PlayerCode;
+import com.pili.pldroid.player.common.Util;
 import com.pili.pldroid.player.widget.VideoView;
 import com.pili.pldroid.playerdemo.R;
-import com.pili.pldroid.playerdemo.common.Util;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 
 import tv.danmaku.ijk.media.player.IMediaPlayer;
@@ -67,8 +67,9 @@ public class VideoPlayerActivity extends Activity implements
         boolean useFastForward = true;
         boolean disableProgressBar = false;
 
+        Log.i(TAG, "mVideoPath:" + mVideoPath);
         // Tip: you can custom the variable depending on your situation
-        mIsLiveStream = !Util.isUrlLocalFile(mVideoPath);
+        mIsLiveStream = Util.isLiveStreaming(mVideoPath);
         if (mIsLiveStream) {
             disableProgressBar = true;
             useFastForward = false;
@@ -81,10 +82,16 @@ public class VideoPlayerActivity extends Activity implements
 //        mVideoView.setMediaBufferingIndicator(mBufferingIndicator);
 
         AVOptions options = new AVOptions();
-        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000); // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_MEDIACODEC, 1); // 1 -> enable, 0 -> disable
-        options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
-        options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+
+        Log.i(TAG, "mIsLiveStream:" + mIsLiveStream);
+        if (mIsLiveStream) {
+            options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+            options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000); // the unit of timeout is ms
+            options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+            options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+        }
+
         mVideoView.setAVOptions(options);
 
         mVideoView.setVideoPath(mVideoPath);
