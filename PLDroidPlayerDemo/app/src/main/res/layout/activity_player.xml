@@ -1,14 +1,14 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_material_dark" >
+    android:background="@color/background_material_light" >
 
     <com.pili.pldroid.player.widget.VideoView
         android:id="@+id/video_view"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
     <Button
         android:id="@+id/back_btn"
@@ -48,4 +48,4 @@
             android:layout_height="60dip" />
     </LinearLayout>
 
-</FrameLayout>
+</RelativeLayout>

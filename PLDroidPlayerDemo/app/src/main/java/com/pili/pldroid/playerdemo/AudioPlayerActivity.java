@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.AudioPlayer;
 import com.pili.pldroid.player.PlayerCode;
 import com.pili.pldroid.playerdemo.R;
@@ -67,13 +68,25 @@ public class AudioPlayerActivity extends Activity implements
         boolean useFastForward = true;
         boolean disableProgressBar = false;
         // Tip: you can custom the variable depending on your situation
-        mIsLiveStream = !Util.isUrlLocalFile(mAudioPath);
+        mIsLiveStream = true;
         if (mIsLiveStream) {
             disableProgressBar = true;
             useFastForward = false;
         }
         mMediaController = new MediaController(this, useFastForward, disableProgressBar);
         mAudioPlayer = new AudioPlayer(this);
+
+        AVOptions options = new AVOptions();
+        options.setInteger(AVOptions.KEY_MEDIACODEC, 1); // 1 -> enable, 0 -> disable
+
+        Log.i(TAG, "mIsLiveStream:" + mIsLiveStream);
+        if (mIsLiveStream) {
+            options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+            options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 8 * 1000); // the unit of timeout is ms
+            options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+            options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+        }
+        mAudioPlayer.setAVOptions(options);
 
         mMediaController.setMediaPlayer(mAudioPlayer);
         mAudioPlayer.setMediaController(mMediaController);

@@ -114,14 +114,33 @@ public void onPrepared(IMediaPlayer mp) {
 
 5 设置 `AVOptions`
 ```JAVA
-AVOptions options = new AVOptions();
-options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000);         // the unit of timeout is ms
-options.setInteger(AVOptions.KEY_MEDIACODEC, 1);                          // 1 -> enable, 0 -> disable
-options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
-options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000);                      // the unit of buffer time is ms
-mVideoView.setAVOptions(options);
+// Tip: you can custom the variable depending on your situation
+if (mIsLiveStream) {
+    options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+    options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000); // the unit of timeout is ms
+    options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+    options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+}
+mAudioPlayer.setAVOptions(options);
 ```
 > `AVOptions.KEY_FFLAGS` , `AVOptions.KEY_BUFFER_TIME` 仅对 RTMP 有效；`AVOptions` 需要在 `start()`/`setVideoPath()` 前设置
+
+6 全屏播放
+
+您只需在 `VideoView` 的布局文件中设置对应的属性即可，例如：
+
+```
+<com.pili.pldroid.player.widget.VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" 
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        />
+```
 
 #### 纯音频播放
 1 实例化 `AudioPlayer`
@@ -148,6 +167,18 @@ mAudioPlayer.setOnInfoListener(this);
 mAudioPlayer.setOnPreparedListener(this);
 ```
 
+5 设置 `AVOptions`
+```JAVA
+// Tip: you can custom the variable depending on your situation
+if (mIsLiveStream) {
+    options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
+    options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000); // the unit of timeout is ms
+    options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
+    options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+}
+mAudioPlayer.setAVOptions(options);
+```
+
 ## 依赖库
 * ffmpeg
 * libyuv
@@ -157,6 +188,14 @@ mAudioPlayer.setOnPreparedListener(this);
 ## 版本历史
 
 ### 播放器
+
+* 1.1.4 ([Release Notes][7])
+  - 发布 pldroid-player-1.1.4.jar
+  - 更新 libpldroidplayer.so
+  - 新增播放器全屏播放支持
+  - 新增纯音频播放 `AVOptions` 支持
+  - 修复播放过程中，概率性异常地回调 `onCompletion` 问题
+  - `VideoView` 布局的展示代码
 
 * 1.1.3 ([Release Notes][6])
   - 发布 pldroid-player-1.1.3.jar
@@ -209,3 +248,4 @@ mAudioPlayer.setOnPreparedListener(this);
 [4]: /ReleaseNotes/release-notes-1.1.1.md
 [5]: /ReleaseNotes/release-notes-1.1.2.md
 [6]: /ReleaseNotes/release-notes-1.1.3.md
+[7]: /ReleaseNotes/release-notes-1.1.4.md

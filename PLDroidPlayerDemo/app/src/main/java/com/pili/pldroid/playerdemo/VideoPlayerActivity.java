@@ -69,7 +69,7 @@ public class VideoPlayerActivity extends Activity implements
 
         Log.i(TAG, "mVideoPath:" + mVideoPath);
         // Tip: you can custom the variable depending on your situation
-        mIsLiveStream = Util.isLiveStreaming(mVideoPath);
+        mIsLiveStream = true;
         if (mIsLiveStream) {
             disableProgressBar = true;
             useFastForward = false;
@@ -87,7 +87,7 @@ public class VideoPlayerActivity extends Activity implements
         Log.i(TAG, "mIsLiveStream:" + mIsLiveStream);
         if (mIsLiveStream) {
             options.setInteger(AVOptions.KEY_BUFFER_TIME, 1000); // the unit of buffer time is ms
-            options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 3 * 1000); // the unit of timeout is ms
+            options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 8 * 1000); // the unit of timeout is ms
             options.setString(AVOptions.KEY_FFLAGS, AVOptions.VALUE_FFLAGS_NOBUFFER); // "nobuffer"
             options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
         }
