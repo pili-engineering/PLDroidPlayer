@@ -4,11 +4,22 @@
     android:layout_height="match_parent"
     android:background="@color/background_material_light" >
 
-    <com.pili.pldroid.player.widget.VideoView
-        android:id="@+id/video_view"
+    <com.pili.pldroid.playerdemo.widget.AspectLayout
+        android:id="@+id/aspect_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true" />
+        android:layout_height="match_parent">
+        <com.pili.pldroid.player.widget.VideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+             />
+    </com.pili.pldroid.playerdemo.widget.AspectLayout>
 
     <Button
         android:id="@+id/back_btn"
@@ -18,6 +29,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
+    <EditText
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:id="@+id/buffering_indicator"
         android:layout_width="wrap_content"
