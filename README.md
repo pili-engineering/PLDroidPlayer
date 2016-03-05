@@ -42,7 +42,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 ### 项目配置
 从 `releases/` 目录获取：
 
-- pldroid-player-xxx.jar 
+- pldroid-player-xxx.jar
 - ijkmediaplayer-xxx.jar
 - armeabi-v7a/libpldroidplayer.so
 - arm64-v8a/libpldroidplayer.so
@@ -82,6 +82,7 @@ PLDroidPlayer 是一个适用于 Android 的音视频播放器 SDK，可高度�
 public class VideoPlayerActivity extends Activity implements
         OnCompletionListener,
         OnInfoListener,
+        OnVideoSizeChangedListener,
         OnErrorListener,
         OnPreparedListener {
 ...
@@ -89,6 +90,7 @@ public class VideoPlayerActivity extends Activity implements
   mVideoView.setOnCompletionListener(this);
   mVideoView.setOnInfoListener(this);
   mVideoView.setOnPreparedListener(this);
+  mVideoView.setOnVideoSizeChangedListener(this);
 ...
 
 @Override
@@ -98,19 +100,52 @@ public void onCompletion(IMediaPlayer mp) {
 
 @Override
 public boolean onError(IMediaPlayer mp, int what, int extra) {
-  ...
+  if (what == -10000) {
+    switch (extra) {
+        case PlayerCode.EXTRA_CODE_404_NOT_FOUND:
+            break;
+        case PlayerCode.EXTRA_CODE_CONNECTION_REFUSED:
+            break;
+        case PlayerCode.EXTRA_CODE_CONNECTION_TIMEOUT:
+            break;
+        case PlayerCode.EXTRA_CODE_EMPTY_PLAYLIST:
+            break;
+        case PlayerCode.EXTRA_CODE_INVALID_URI:
+            break;
+        case PlayerCode.EXTRA_CODE_IO_ERROR:
+            break;
+        case PlayerCode.EXTRA_CODE_STREAM_DISCONNECTED:
+            break;
+    }
+  }
 }
 
 @Override
 public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-  ...
+  switch (what) {
+    case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+        break;
+    case IMediaPlayer.MEDIA_INFO_BUFFERING_END:
+        break;
+    case IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+        break;
+    case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+        break;
+    }
 }
 
 @Override
 public void onPrepared(IMediaPlayer mp) {
   ...
 }
+
+@Override
+public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height, int sarNum, int sarDen) {
+  ...
+}
 ```
+
+
 
 5 设置 `AVOptions`
 ```JAVA
@@ -134,7 +169,7 @@ mAudioPlayer.setAVOptions(options);
         android:id="@+id/video_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true" 
+        android:layout_centerInParent="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -188,6 +223,14 @@ mAudioPlayer.setAVOptions(options);
 ## 版本历史
 
 ### 播放器
+
+* 1.1.6 ([Release Notes][8])
+  - 发布 pldroid-player-1.1.6.jar
+  - 更新 libpldroidplayer.so
+  - 更新 ijkmediaplayer.jar
+  - 新增 `OnVideoSizeChangedListener#onVideoSizeChanged(IMediaPlayer, int, int, int, int)` 回调
+  - 修复概率性无视频有音频的现象
+  - 新增全屏播放 Demo 展示代码
 
 * 1.1.4 ([Release Notes][7])
   - 发布 pldroid-player-1.1.4.jar
@@ -249,3 +292,4 @@ mAudioPlayer.setAVOptions(options);
 [5]: /ReleaseNotes/release-notes-1.1.2.md
 [6]: /ReleaseNotes/release-notes-1.1.3.md
 [7]: /ReleaseNotes/release-notes-1.1.4.md
+[8]: /ReleaseNotes/release-notes-1.1.6.md
