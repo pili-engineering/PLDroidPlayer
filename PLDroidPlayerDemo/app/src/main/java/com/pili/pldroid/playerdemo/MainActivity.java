@@ -1,120 +1,168 @@
 package com.pili.pldroid.playerdemo;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.provider.MediaStore;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.ListView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.pili.pldroid.playerdemo.R;
 
-    private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
 
-    private Spinner mActivitySpinner;
-    private EditText mEditText;
-    private int mIsHwCodecEnabled = 0;
+public class MainActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String[] TEST_ACTIVITY_ARRAY = {
-            "PLMediaPlayerActivity",
-            "PLAudioPlayerActivity",
-            "PLVideoViewActivity",
-            "PLVideoTextureActivity",
-            "VideoViewActivity"
-    };
+    private static final String MSG_NOT_ALLOW_EMPTY_URL = "Error! URL is empty!";
+
+    private ListView fileListView;
+
+    private VideoAdapter adapter;
+
+    private boolean changed = false;
+    private EditText mInputUrlEditText;
+    private Button mVideoBtn;
+    private Button mAudioBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mEditText = (EditText)findViewById(R.id.VideoPathEdit);
-        mEditText.setText(DEFAULT_TEST_URL);
+        fileListView = (ListView) findViewById(R.id.fileListView);
+        adapter = new VideoAdapter(this);
+        fileListView.setAdapter(adapter);
+        fileListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, final long id) {
+                Intent intent = new Intent(MainActivity.this, VideoPlayerActivity.class);
+                intent.putExtra("videoPath", adapter.getVideoPath(position));
+                startActivity(intent);
+            }
+        });
 
-        mActivitySpinner = (Spinner) findViewById(R.id.TestSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
-        mActivitySpinner.setAdapter(adapter);
+        mInputUrlEditText = (EditText) findViewById(R.id.input_url);
+
+        mVideoBtn = (Button) findViewById(R.id.btn_video);
+        mVideoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = mInputUrlEditText.getText().toString().trim();
+                if (url == null || url.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), MSG_NOT_ALLOW_EMPTY_URL, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, VideoPlayerActivity.class);
+                intent.putExtra("videoPath", url);
+                startActivity(intent);
+            }
+        });
+
+        mAudioBtn = (Button) findViewById(R.id.btn_audio);
+        mAudioBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String url = mInputUrlEditText.getText().toString().trim();
+                if (url == null || url.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), MSG_NOT_ALLOW_EMPTY_URL, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent intent = new Intent(MainActivity.this, AudioPlayerActivity.class);
+                intent.putExtra("audioPath", url);
+                startActivity(intent);
+            }
+        });
+        refreshUI();
+        getSupportLoaderManager().initLoader(1, null, this);
     }
 
-    public void onClickPlaySetting(View v) {
-        showPlaySettingDialog();
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 
-    public void onClickLocalFile(View v) {
-        Intent intent = new Intent(this, VideoFileActivity.class);
-        startActivityForResult(intent, 0);
-    }
-
-    public void onClickPlay(View v) {
-        String videopath = mEditText.getText().toString();
-        if (!"".equals(videopath)) {
-            jumpToPlayerActivity(videopath);
+    private void refreshUI() {
+        if (changed) {
+            fileListView.setVisibility(View.GONE);
+            mInputUrlEditText.setVisibility(View.VISIBLE);
+            mAudioBtn.setVisibility(View.VISIBLE);
+            mVideoBtn.setVisibility(View.VISIBLE);
+        } else {
+            fileListView.setVisibility(View.VISIBLE);
+            mInputUrlEditText.setVisibility(View.GONE);
+            mAudioBtn.setVisibility(View.GONE);
+            mVideoBtn.setVisibility(View.GONE);
         }
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
-    public void jumpToPlayerActivity(String videopath) {
-        Class<?> cls = null;
-        switch (mActivitySpinner.getSelectedItemPosition()) {
-            case 0: cls = PLMediaPlayerActivity.class;
-                break;
-            case 1: cls = PLAudioPlayerActivity.class;
-                break;
-            case 2: cls = PLVideoViewActivity.class;
-                break;
-            case 3: cls = PLVideoTextureActivity.class;
-                break;
-            case 4: cls = VideoViewActivity.class;
-                break;
-            default:
-                return;
+        if (id == R.id.action_change) {
+            changed = !changed;
+            refreshUI();
+            return true;
         }
-        Intent intent = new Intent(this, cls);
-        intent.putExtra("videoPath", videopath);
-        intent.putExtra("mediaCodec", mIsHwCodecEnabled);
-        startActivity(intent);
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        String videoPath = data.getStringExtra("videoPath");
-        mEditText.setText(videoPath, TextView.BufferType.EDITABLE);
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(this, MediaStore.Video.Media.getContentUri("external"), null, null, null,
+                "UPPER(" + MediaStore.Video.Media.DATA + ")");
     }
 
-    protected void showPlaySettingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View root = inflater.inflate(R.layout.dialog_setting,null);
-        final Spinner codecSpinner = (Spinner) root.findViewById(R.id.CodecSpinner);
-        codecSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {
-                getString(R.string.sw_decode), getString(R.string.hw_decode)
-        }));
-        codecSpinner.setSelection(mIsHwCodecEnabled);
-        builder.setTitle(getString(R.string.play_setting));
-        builder.setView(root);
-        final AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.dlg_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mIsHwCodecEnabled = codecSpinner.getSelectedItemPosition();
-            }
-        });
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        adapter.swapCursor(data);
+    }
 
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    class VideoAdapter extends SimpleCursorAdapter {
+        public VideoAdapter(Context context) {
+            super(context, android.R.layout.simple_list_item_2, null,
+                    new String[]{MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DATA},
+                    new int[]{android.R.id.text1, android.R.id.text2}, 0);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            final Cursor cursor = getCursor();
+            if (cursor.getCount() == 0 || position >= cursor.getCount()) {
+                return 0;
             }
-        });
-        dialog.show();
+            cursor.moveToPosition(position);
+
+            return cursor.getLong(0);
+        }
+
+        public String getVideoPath(int position) {
+            final Cursor cursor = getCursor();
+            if (cursor.getCount() == 0) {
+                return "";
+            }
+            cursor.moveToPosition(position);
+
+            return cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+        }
     }
 }
