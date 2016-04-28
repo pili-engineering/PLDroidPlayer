@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "24.0.0 rc1"
 
     defaultConfig {
-        applicationId "com.pili.android.playerdemo"
+        applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
     }
@@ -20,8 +20,6 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.0.0'
-    compile files('libs/ijkmediaplayer.jar')
-    compile files('libs/pldroid-player-1.1.6.jar')
+    compile 'com.android.support:design:23.2.1'
+    compile files('libs/pldroid-player-1.2.0.jar')
 }
