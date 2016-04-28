@@ -27,11 +27,13 @@ import com.pili.pldroid.player.IMediaController;
 import java.util.Locale;
 
 /**
- * Created by jerikc on 15/5/29.
+ * You can write a custom MediaController instead of this class
+ * A MediaController widget must implement all the interface defined by com.pili.pldroid.player.IMediaController
  */
 public class MediaController extends FrameLayout implements IMediaController {
-    private static final String TAG = "MyMediaController";
-    private MediaPlayerControl mPlayer;
+
+    private static final String TAG = "PLMediaController";
+    private IMediaController.MediaPlayerControl mPlayer;
     private Context mContext;
     private PopupWindow mWindow;
     private int mAnimStyle;
@@ -73,7 +75,6 @@ public class MediaController extends FrameLayout implements IMediaController {
     private Runnable mLastSeekBarRunnable;
     private boolean mDisableProgress = false;
 
-
     public MediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
         mRoot = this;
@@ -109,6 +110,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     public void onFinishInflate() {
         if (mRoot != null)
             initControllerView(mRoot);
+        super.onFinishInflate();
     }
 
     private void initFloatingWindow() {
@@ -375,7 +377,7 @@ public class MediaController extends FrameLayout implements IMediaController {
             if (!fromuser)
                 return;
 
-            final long newposition = (mDuration * progress) / 1000;
+            final int newposition = (int) (mDuration * progress) / 1000;
             String time = generateTime(newposition);
             if (mInstantSeeking) {
                 mHandler.removeCallbacks(mLastSeekBarRunnable);
@@ -393,7 +395,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
         public void onStopTrackingTouch(SeekBar bar) {
             if (!mInstantSeeking)
-                mPlayer.seekTo((mDuration * bar.getProgress()) / 1000);
+                mPlayer.seekTo((int)(mDuration * bar.getProgress()) / 1000);
 
             show(sDefaultTimeout);
             mHandler.removeMessages(SHOW_PROGRESS);
@@ -403,9 +405,9 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
     };
 
-    private View.OnClickListener mRewListener = new View.OnClickListener() {
+    private OnClickListener mRewListener = new OnClickListener() {
         public void onClick(View v) {
-            long pos = mPlayer.getCurrentPosition();
+            int pos = (int)mPlayer.getCurrentPosition();
             pos -= 5000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();
@@ -414,9 +416,9 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
     };
 
-    private View.OnClickListener mFfwdListener = new View.OnClickListener() {
+    private OnClickListener mFfwdListener = new OnClickListener() {
         public void onClick(View v) {
-            long pos = mPlayer.getCurrentPosition();
+            int pos = (int)mPlayer.getCurrentPosition();
             pos += 15000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();
@@ -528,7 +530,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         if (mShowing) {
             if (mAnchor != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                    mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    //mAnchor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
                 }
             }
             try {
