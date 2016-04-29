@@ -50,6 +50,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
 
+        // whether start play automatically after prepared, default value is 1
+        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
         mVideoView.setAVOptions(options);
 
         // Set some listeners
@@ -61,8 +64,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setOnSeekCompleteListener(mOnSeekCompleteListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
 
-        // After setVideoPath, the play will start automatically
-        // mVideoView.start() is not required
         mVideoView.setVideoPath(mVideoPath);
 
         // You can also use a custom `MediaController` widget
