@@ -163,6 +163,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
             finish();
             // If you want to retry, do like this:
             // mVideoView.setVideoPath(mVideoPath);
+            // mVideoView.start();
             // Return true means the error has been handled
             // If return false, then `onCompletion` will be called
             return true;
