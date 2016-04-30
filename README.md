@@ -39,6 +39,9 @@ Android 2.3 (API 9) 及其以上
 * sdl
 * libVLC
 
+## 说明
+PLDroidPlayer 目前基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) , 感谢 [ijkplayer](https://github.com/Bilibili/ijkplayer) ，相应的修改详见：https://github.com/pili-engineering/ijkplayer
+
 ## 反馈及意见
 
 当你遇到任何问题时，可以通过在 GitHub 的 repo 提交 issues 来反馈问题，请尽可能的描述清楚遇到的问题，如果有错误信息也一同附带，并且在 Labels 中指明类型为 bug 或者其他。
