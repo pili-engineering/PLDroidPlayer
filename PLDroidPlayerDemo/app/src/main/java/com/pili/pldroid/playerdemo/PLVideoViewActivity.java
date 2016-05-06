@@ -50,10 +50,12 @@ public class PLVideoViewActivity extends AppCompatActivity {
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
 
+        // whether start play automatically after prepared, default value is 1
+        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
         mVideoView.setAVOptions(options);
 
         // Set some listeners
-        mVideoView.setOnPreparedListener(mOnPreparedListener);
         mVideoView.setOnInfoListener(mOnInfoListener);
         mVideoView.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
@@ -61,8 +63,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setOnSeekCompleteListener(mOnSeekCompleteListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
 
-        // After setVideoPath, the play will start automatically
-        // mVideoView.start() is not required
         mVideoView.setVideoPath(mVideoPath);
 
         // You can also use a custom `MediaController` widget
@@ -112,13 +112,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         }
     }
 
-    private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(PLMediaPlayer plMediaPlayer) {
-            Log.d(TAG, "onPrepared ! ");
-        }
-    };
-
     private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, int extra) {
@@ -162,6 +155,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
             finish();
             // If you want to retry, do like this:
             // mVideoView.setVideoPath(mVideoPath);
+            // mVideoView.start();
             // Return true means the error has been handled
             // If return false, then `onCompletion` will be called
             return true;

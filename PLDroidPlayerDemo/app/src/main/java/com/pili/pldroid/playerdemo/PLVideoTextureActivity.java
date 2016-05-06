@@ -59,7 +59,13 @@ public class PLVideoTextureActivity extends AppCompatActivity {
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
 
+        // whether start play automatically after prepared, default value is 1
+        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
         mVideoView.setAVOptions(options);
+
+        // You can mirror the display
+        // mVideoView.setMirror(true);
 
         // You can also use a custom `MediaController` widget
         mMediaController = new MediaController(this, false, isLiveStreaming(mVideoPath));
@@ -68,8 +74,8 @@ public class PLVideoTextureActivity extends AppCompatActivity {
         mVideoView.setOnCompletionListener(mOnCompletionListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
 
-        // After setVideoPath, the play will start automatically
         mVideoView.setVideoPath(mVideoPath);
+        mVideoView.start();
     }
 
     @Override
@@ -153,6 +159,7 @@ public class PLVideoTextureActivity extends AppCompatActivity {
             finish();
             // If you want to retry, do like this:
             // mVideoView.setVideoPath(mVideoPath);
+            // mVideoView.start();
             // Return true means the error has been handled
             // If return false, then `onCompletion` will be called
             return true;

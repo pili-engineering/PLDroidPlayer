@@ -34,6 +34,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     private int mSurfaceHeight = 0;
 
     private String mVideoPath = null;
+    private boolean mIsStopped = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,9 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, codec);
 
+        // whether start play automatically after prepared, default value is 1
+        mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
@@ -72,7 +76,11 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     }
 
     public void onClickPlay(View v) {
-        prepare();
+        if (mIsStopped) {
+            prepare();
+        } else {
+            mMediaPlayer.start();
+        }
     }
 
     public void onClickPause(View v) {
@@ -92,6 +100,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
             mMediaPlayer.stop();
             mMediaPlayer.reset();
         }
+        mIsStopped = true;
     }
 
     public void release() {
@@ -175,6 +184,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         public void onPrepared(PLMediaPlayer mp) {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
+            mIsStopped = false;
         }
     };
 
