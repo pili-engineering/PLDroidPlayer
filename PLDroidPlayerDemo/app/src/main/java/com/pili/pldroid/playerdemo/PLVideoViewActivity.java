@@ -56,7 +56,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setAVOptions(options);
 
         // Set some listeners
-        mVideoView.setOnPreparedListener(mOnPreparedListener);
         mVideoView.setOnInfoListener(mOnInfoListener);
         mVideoView.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
@@ -112,13 +111,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 break;
         }
     }
-
-    private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
-        @Override
-        public void onPrepared(PLMediaPlayer plMediaPlayer) {
-            Log.d(TAG, "onPrepared ! ");
-        }
-    };
 
     private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
         @Override
