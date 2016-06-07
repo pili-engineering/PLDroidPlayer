@@ -24,6 +24,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private Toast mToast = null;
     private String mVideoPath = null;
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
+    private boolean mIsActivityPaused = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
         if (isLiveStreaming(mVideoPath)) {
             // the unit of timeout is ms
+            options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
             options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
             // Some optimization with buffering mechanism when be set to 1
             options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
@@ -73,19 +75,22 @@ public class PLVideoViewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mIsActivityPaused = false;
         mVideoView.start();
     }
 
     @Override
     protected void onPause() {
-        mVideoView.pause();
         super.onPause();
+        mToast = null;
+        mIsActivityPaused = true;
+        mVideoView.pause();
     }
 
     @Override
     protected void onDestroy() {
-        mVideoView.stopPlayback();
         super.onDestroy();
+        mVideoView.stopPlayback();
     }
 
     public void onClickSwitchScreen(View v) {
@@ -193,6 +198,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
     };
 
     private void showToastTips(final String tips) {
+        if (mIsActivityPaused) {
+            return;
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

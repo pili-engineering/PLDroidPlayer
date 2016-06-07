@@ -101,7 +101,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private boolean initController(Context context) {
         mUseFastForward = true;
-        mContext = context;
+        mContext = context.getApplicationContext();
         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
         return true;
     }
