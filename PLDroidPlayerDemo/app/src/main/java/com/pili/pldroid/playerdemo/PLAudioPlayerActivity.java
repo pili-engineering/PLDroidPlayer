@@ -3,6 +3,7 @@ package com.pili.pldroid.playerdemo;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -39,27 +40,29 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         mMediaPlayer.setOnInfoListener(mOnInfoListener);
         mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
 
+        mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+
         prepare();
     }
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         release();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
-        super.onDestroy();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMediaPlayer.start();
+        // mMediaPlayer.start();
     }
 
     @Override
     protected void onPause() {
-        mMediaPlayer.pause();
         super.onPause();
+        // mMediaPlayer.pause();
     }
 
     public void onClickPlay(View v) {

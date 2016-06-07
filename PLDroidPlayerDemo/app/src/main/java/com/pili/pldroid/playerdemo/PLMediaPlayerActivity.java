@@ -3,6 +3,7 @@ package com.pili.pldroid.playerdemo;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -35,6 +36,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
     private String mVideoPath = null;
     private boolean mIsStopped = false;
+    private boolean mIsActivityPaused = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
         if (isLiveStreaming(mVideoPath)) {
             // the unit of timeout is ms
+            mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
             mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
             // Some optimization with buffering mechanism when be set to 1
             mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
@@ -69,10 +72,22 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        super.onDestroy();
         release();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
-        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mIsActivityPaused = false;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mIsActivityPaused = true;
     }
 
     public void onClickPlay(View v) {
@@ -103,6 +118,12 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         mIsStopped = true;
     }
 
+    public void releaseWithoutStop() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.setDisplay(null);
+        }
+    }
+
     public void release() {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
@@ -114,7 +135,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     private void prepare() {
 
         if (mMediaPlayer != null) {
-            release();
+            mMediaPlayer.setDisplay(mSurfaceView.getHolder());
+            return;
         }
 
         try {
@@ -129,6 +151,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
             // set replay if completed
             // mMediaPlayer.setLooping(true);
+
+            mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
             mMediaPlayer.setDataSource(mVideoPath);
             mMediaPlayer.setDisplay(mSurfaceView.getHolder());
@@ -158,7 +182,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
-            release();
+            // release();
+            releaseWithoutStop();
         }
     };
 
@@ -281,6 +306,9 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     };
 
     private void showToastTips(final String tips) {
+        if (mIsActivityPaused) {
+            return;
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

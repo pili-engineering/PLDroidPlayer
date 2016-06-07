@@ -50,6 +50,7 @@ public class PLVideoTextureActivity extends AppCompatActivity {
 
         if (isLiveStreaming(mVideoPath)) {
             // the unit of timeout is ms
+            options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
             options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
             // Some optimization with buffering mechanism when be set to 1
             options.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
@@ -80,8 +81,9 @@ public class PLVideoTextureActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        mVideoView.pause();
         super.onPause();
+        mToast = null;
+        mVideoView.pause();
     }
 
     @Override
@@ -92,8 +94,8 @@ public class PLVideoTextureActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        mVideoView.stopPlayback();
         super.onDestroy();
+        mVideoView.stopPlayback();
     }
 
     public void onClickRotate(View v) {
