@@ -17,6 +17,7 @@ PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可�
 - [x] 支持纯音频播放，并支持后台运行
 - [x] 可高度定制化的 `MediaController`		
 - [x] 支持 ARM, ARMv7a, ARM64v8a, X86 主流芯片体系架构
+- [x] 支持后台播放
 
 ## 播放器对比
 | -  | ijkplayer | PLDroidPlayer |
