@@ -20,9 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
 
     private static final String[] DEFAULT_PLAYBACK_DOMAIN_ARRAY = {
-            "live.hkstv.hk.lxdns.com",
-            "pili-live-rtmp.pilitest.qiniucdn.com",
-            "pili-live-hdl.pilitest.qiniucdn.com"
+            "live.hkstv.hk.lxdns.com"
     };
 
     private Spinner mActivitySpinner;
