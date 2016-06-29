@@ -5,7 +5,7 @@ PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可�
 ## 特性		 
 
 - [x] 基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) ( based on [ffplay](http://ffmpeg.org/) )		
-- [x] Android Min API 9		
+- [x] Android Min API 9
 - [x] 支持 RTMP 和 HLS 协议的直播流媒体播放
 - [x] 支持常见的音视频文件播放（MP4、M4A、flv 等）
 - [x] 支持 MediaCodec 硬件解码
@@ -14,10 +14,15 @@ PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可�
 - [x] 提供 `PLVideoTextureView` 控件
 - [x] 支持多种画面预览模式
 - [x] 支持画面旋转（0度，90度，180度，270度）
-- [x] 支持纯音频播放，并支持后台运行
-- [x] 可高度定制化的 `MediaController`		
-- [x] 支持 ARM, ARMv7a, ARM64v8a, X86 主流芯片体系架构
+- [x] 支持画面镜像变换
+- [x] 支持播放器音量设置，可实现静音功能
+- [x] 支持纯音频播放
 - [x] 支持后台播放
+- [x] 支持首屏秒开
+- [x] 支持直播累积延时优化
+- [x] 支持带 IP 地址的播放 URL
+- [x] 可高度定制化的 `MediaController`
+- [x] 支持 ARM, ARMv7a, ARM64v8a, X86 主流芯片体系架构
 
 ## 播放器对比
 | -  | ijkplayer | PLDroidPlayer |

@@ -173,6 +173,12 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
                     break;
+                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
+                    break;
+                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
+                    break;
+                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
+                    break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     break;
                 default:
