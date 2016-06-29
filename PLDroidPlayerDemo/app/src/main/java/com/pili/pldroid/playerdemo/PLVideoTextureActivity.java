@@ -71,7 +71,7 @@ public class PLVideoTextureActivity extends AppCompatActivity {
         // mVideoView.setMirror(true);
 
         // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, false, isLiveStreaming==1);
+        mMediaController = new MediaController(this, false, isLiveStreaming == 1);
         mVideoView.setMediaController(mMediaController);
 
         mVideoView.setOnCompletionListener(mOnCompletionListener);

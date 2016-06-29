@@ -70,7 +70,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setVideoPath(mVideoPath);
 
         // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, false, isLiveStreaming==1);
+        mMediaController = new MediaController(this, false, isLiveStreaming == 1);
         mVideoView.setMediaController(mMediaController);
     }
 
