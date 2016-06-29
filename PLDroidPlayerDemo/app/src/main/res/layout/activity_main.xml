@@ -21,6 +21,62 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/pls_choose_setting"
+        android:layout_margin="15dp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <RadioGroup
+        android:id="@+id/StreamingTypeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp" >
+
+        <RadioButton
+            android:id="@+id/RadioLiveStreaming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/live_streaming"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/RadioPlayback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/playback"
+            android:layout_marginLeft="10dp" />
+
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/DecodeTypeRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp" >
+
+        <RadioButton
+            android:id="@+id/RadioSWDecode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sw_decode"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/RadioHWDecode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hw_decode"
+            android:layout_marginLeft="10dp" />
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/pls_choose_videopath"
         android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
@@ -28,50 +84,36 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <EditText
+        android:id="@+id/VideoPathEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/input_video_path"
+        android:singleLine="true"
+        android:textSize="18sp"
+        android:padding="10sp"
+        android:layout_margin="10dp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
         android:layout_margin="10dp" >
 
-        <EditText
-            android:id="@+id/VideoPathEdit"
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/input_video_path"
-            android:singleLine="true"
-            android:textSize="18sp"
-            android:padding="10sp"
-            android:layout_margin="5dp" />
+            android:text="@string/btn_local_file"
+            android:textSize="12sp"
+            android:onClick="onClickLocalFile" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="5dp" >
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_local_file"
-                android:textSize="12sp"
-                android:onClick="onClickLocalFile" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_play_setting"
-                android:textSize="12sp"
-                android:onClick="onClickPlaySetting" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_click_play"
-                android:textSize="12sp"
-                android:onClick="onClickPlay" />
-
-        </LinearLayout>
+            android:text="@string/btn_click_play"
+            android:textSize="12sp"
+            android:onClick="onClickPlay"
+            android:layout_marginLeft="10dp" />
 
     </LinearLayout>
 

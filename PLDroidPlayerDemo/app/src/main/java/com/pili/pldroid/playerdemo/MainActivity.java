@@ -1,26 +1,32 @@
 package com.pili.pldroid.playerdemo;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.pili.pldroid.player.PLNetworkManager;
+
+import java.net.UnknownHostException;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
 
+    private static final String[] DEFAULT_PLAYBACK_DOMAIN_ARRAY = {
+            "live.hkstv.hk.lxdns.com"
+    };
+
     private Spinner mActivitySpinner;
     private EditText mEditText;
-    private int mIsHwCodecEnabled = 0;
+    private RadioGroup mStreamingTypeRadioGroup;
+    private RadioGroup mDecodeTypeRadioGroup;
 
     public static final String[] TEST_ACTIVITY_ARRAY = {
             "PLMediaPlayerActivity",
@@ -35,16 +41,27 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        try {
+            PLNetworkManager.getInstance().startDnsCacheService(this, DEFAULT_PLAYBACK_DOMAIN_ARRAY);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
         mEditText = (EditText)findViewById(R.id.VideoPathEdit);
         mEditText.setText(DEFAULT_TEST_URL);
+
+        mStreamingTypeRadioGroup = (RadioGroup) findViewById(R.id.StreamingTypeRadioGroup);
+        mDecodeTypeRadioGroup = (RadioGroup) findViewById(R.id.DecodeTypeRadioGroup);
 
         mActivitySpinner = (Spinner) findViewById(R.id.TestSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
         mActivitySpinner.setAdapter(adapter);
     }
 
-    public void onClickPlaySetting(View v) {
-        showPlaySettingDialog();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        PLNetworkManager.getInstance().stopDnsCacheService(this);
     }
 
     public void onClickLocalFile(View v) {
@@ -77,7 +94,16 @@ public class MainActivity extends AppCompatActivity {
         }
         Intent intent = new Intent(this, cls);
         intent.putExtra("videoPath", videopath);
-        intent.putExtra("mediaCodec", mIsHwCodecEnabled);
+        if (mDecodeTypeRadioGroup.getCheckedRadioButtonId() == R.id.RadioHWDecode) {
+            intent.putExtra("mediaCodec", 1);
+        } else {
+            intent.putExtra("mediaCodec", 0);
+        }
+        if (mStreamingTypeRadioGroup.getCheckedRadioButtonId() == R.id.RadioLiveStreaming) {
+            intent.putExtra("liveStreaming", 1);
+        } else {
+            intent.putExtra("liveStreaming", 0);
+        }
         startActivity(intent);
     }
 
@@ -88,33 +114,5 @@ public class MainActivity extends AppCompatActivity {
         }
         String videoPath = data.getStringExtra("videoPath");
         mEditText.setText(videoPath, TextView.BufferType.EDITABLE);
-    }
-
-    protected void showPlaySettingDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View root = inflater.inflate(R.layout.dialog_setting,null);
-        final Spinner codecSpinner = (Spinner) root.findViewById(R.id.CodecSpinner);
-        codecSpinner.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {
-                getString(R.string.sw_decode), getString(R.string.hw_decode)
-        }));
-        codecSpinner.setSelection(mIsHwCodecEnabled);
-        builder.setTitle(getString(R.string.play_setting));
-        builder.setView(root);
-        final AlertDialog dialog = builder.create();
-        dialog.setCancelable(false);
-        dialog.setButton(DialogInterface.BUTTON_POSITIVE, getString(R.string.dlg_ok), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mIsHwCodecEnabled = codecSpinner.getSelectedItemPosition();
-            }
-        });
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.dlg_cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        dialog.show();
     }
 }

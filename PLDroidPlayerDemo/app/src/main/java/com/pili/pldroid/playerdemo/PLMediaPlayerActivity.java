@@ -51,12 +51,14 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
         mAVOptions = new AVOptions();
 
-        if (isLiveStreaming(mVideoPath)) {
-            // the unit of timeout is ms
-            mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-            mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-            // Some optimization with buffering mechanism when be set to 1
-            mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, 1);
+        int isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
+        // the unit of timeout is ms
+        mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+        mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
+        // Some optimization with buffering mechanism when be set to 1
+        mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
+        if (isLiveStreaming == 1) {
+            mAVOptions.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
         }
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
@@ -116,6 +118,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
             mMediaPlayer.reset();
         }
         mIsStopped = true;
+        mMediaPlayer = null;
     }
 
     public void releaseWithoutStop() {
@@ -283,6 +286,15 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
                     showToastTips("Network IO Error !");
                     break;
+                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
+                    showToastTips("Unauthorized Error !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
+                    showToastTips("Prepare timeout !");
+                    break;
+                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
+                    showToastTips("Read frame timeout !");
+                    break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                 default:
                     showToastTips("unknown error !");
@@ -315,14 +327,5 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
                 Toast.makeText(PLMediaPlayerActivity.this, tips, Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    private boolean isLiveStreaming(String url) {
-        if (url.startsWith("rtmp://")
-                || (url.startsWith("http://") && url.endsWith(".m3u8"))
-                || (url.startsWith("http://") && url.endsWith(".flv"))) {
-            return true;
-        }
-        return false;
     }
 }
