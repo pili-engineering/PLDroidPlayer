@@ -25,12 +25,12 @@ PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可�
 - [x] 支持 ARM, ARMv7a, ARM64v8a, X86 主流芯片体系架构
 
 ## 播放器对比
-| -  | ijkplayer | PLDroidPlayer |
-|---|---|---|
-|Shared Library Size|较大|较小|
-|Shared Library Count|5个|1个|
-|Widget|有商业授权风险|无商业授权风险|
-|MediaController|难以定制化|容易定制化|
+| -                    | ijkplayer | PLDroidPlayer |
+| -------------------- | --------- | ------------- |
+| Shared Library Size  | 较大        | 较小            |
+| Shared Library Count | 5个        | 1个            |
+| Widget               | 有商业授权风险   | 无商业授权风险       |
+| MediaController      | 难以定制化     | 容易定制化         |
 
 ## SDK 最低要求
 
@@ -47,6 +47,9 @@ Android 2.3 (API 9) 及其以上
 
 ## 说明
 PLDroidPlayer 目前基于 [ijkplayer](https://github.com/Bilibili/ijkplayer) , 感谢 [ijkplayer](https://github.com/Bilibili/ijkplayer) ，相应的修改详见：https://github.com/pili-engineering/ijkplayer
+
+## 版本升级须知
+升级 SDK 之前，请在[这里](https://github.com/pili-engineering/PLDroidPlayer/wiki#3.3)查看升级须知。
 
 ## 反馈及意见
 
