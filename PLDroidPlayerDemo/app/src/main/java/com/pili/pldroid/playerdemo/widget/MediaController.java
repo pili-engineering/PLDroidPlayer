@@ -377,7 +377,7 @@ public class MediaController extends FrameLayout implements IMediaController {
             if (!fromuser)
                 return;
 
-            final int newposition = (int) (mDuration * progress) / 1000;
+            final long newposition = (long) (mDuration * progress) / 1000;
             String time = generateTime(newposition);
             if (mInstantSeeking) {
                 mHandler.removeCallbacks(mLastSeekBarRunnable);
@@ -395,7 +395,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
         public void onStopTrackingTouch(SeekBar bar) {
             if (!mInstantSeeking)
-                mPlayer.seekTo((int)(mDuration * bar.getProgress()) / 1000);
+                mPlayer.seekTo(mDuration * bar.getProgress() / 1000);
 
             show(sDefaultTimeout);
             mHandler.removeMessages(SHOW_PROGRESS);
@@ -407,7 +407,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private OnClickListener mRewListener = new OnClickListener() {
         public void onClick(View v) {
-            int pos = (int)mPlayer.getCurrentPosition();
+            long pos = mPlayer.getCurrentPosition();
             pos -= 5000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();
@@ -418,7 +418,7 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private OnClickListener mFfwdListener = new OnClickListener() {
         public void onClick(View v) {
-            int pos = (int)mPlayer.getCurrentPosition();
+            long pos = mPlayer.getCurrentPosition();
             pos += 15000; // milliseconds
             mPlayer.seekTo(pos);
             setProgress();

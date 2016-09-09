@@ -3,6 +3,9 @@ package com.pili.pldroid.playerdemo;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.playerdemo.utils.Utils;
 
 import java.io.IOException;
 
@@ -25,6 +29,8 @@ import java.io.IOException;
 public class PLMediaPlayerActivity extends AppCompatActivity {
 
     private static final String TAG = PLMediaPlayerActivity.class.getSimpleName();
+
+    private static final int MESSAGE_ID_RECONNECTING = 0x01;
 
     private SurfaceView mSurfaceView;
     private PLMediaPlayer mMediaPlayer;
@@ -37,6 +43,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     private String mVideoPath = null;
     private boolean mIsStopped = false;
     private boolean mIsActivityPaused = true;
+
+    private Toast mToast = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,7 +151,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         }
 
         try {
-            mMediaPlayer = new PLMediaPlayer(mAVOptions);
+            mMediaPlayer = new PLMediaPlayer(this, mAVOptions);
 
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
@@ -160,7 +168,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
             mMediaPlayer.setDataSource(mVideoPath);
             mMediaPlayer.setDisplay(mSurfaceView.getHolder());
             mMediaPlayer.prepareAsync();
-
+        } catch (UnsatisfiedLinkError e) {
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         } catch (IllegalStateException e) {
@@ -263,6 +272,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer mp, int errorCode) {
+            boolean isNeedReconnect = false;
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
@@ -276,41 +286,43 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
                     showToastTips("Connection timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
                     showToastTips("Empty playlist !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
                     showToastTips("Stream disconnected !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
                     showToastTips("Network IO Error !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
                     showToastTips("Unauthorized Error !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
                     showToastTips("Prepare timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                    break;
                 default:
                     showToastTips("unknown error !");
                     break;
             }
-            // Todo pls handle the error status here, retry or call finish()
-            finish();
-            // The PLMediaPlayer has moved to the Error state, if you want to retry, must reset first !
-            // try {
-            //     mMediaPlayer.reset();
-            //     mMediaPlayer.setDisplay(mSurfaceView.getHolder());
-            //     mMediaPlayer.setDataSource(mVideoPath);
-            //     mMediaPlayer.prepareAsync();
-            // } catch (IOException e) {
-            //     e.printStackTrace();
-            // }
+            // Todo pls handle the error status here, reconnect or call finish()
+            release();
+            if (isNeedReconnect) {
+                sendReconnectMessage();
+            } else {
+                finish();
+            }
             // Return true means the error has been handled
             // If return false, then `onCompletion` will be called
             return true;
@@ -324,8 +336,37 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(PLMediaPlayerActivity.this, tips, Toast.LENGTH_LONG).show();
+                if (mToast != null) {
+                    mToast.cancel();
+                }
+                mToast = Toast.makeText(PLMediaPlayerActivity.this, tips, Toast.LENGTH_SHORT);
+                mToast.show();
             }
         });
     }
+
+    private void sendReconnectMessage() {
+        showToastTips("正在重连...");
+        mLoadingView.setVisibility(View.VISIBLE);
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
+    }
+
+    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what != MESSAGE_ID_RECONNECTING) {
+                return;
+            }
+            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
+                finish();
+                return;
+            }
+            if (!Utils.isNetworkAvailable(PLMediaPlayerActivity.this)) {
+                sendReconnectMessage();
+                return;
+            }
+            prepare();
+        }
+    };
 }

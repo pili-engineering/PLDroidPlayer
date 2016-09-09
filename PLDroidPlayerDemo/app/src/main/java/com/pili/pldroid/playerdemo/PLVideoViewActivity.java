@@ -1,6 +1,9 @@
 package com.pili.pldroid.playerdemo;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoView;
+import com.pili.pldroid.playerdemo.utils.Utils;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 
 /**
@@ -19,12 +23,15 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private static final String TAG = PLVideoViewActivity.class.getSimpleName();
 
+    private static final int MESSAGE_ID_RECONNECTING = 0x01;
+
     private MediaController mMediaController;
     private PLVideoView mVideoView;
     private Toast mToast = null;
     private String mVideoPath = null;
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private boolean mIsActivityPaused = true;
+    private View mLoadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +40,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pl_video_view);
         mVideoView = (PLVideoView) findViewById(R.id.VideoView);
 
-        View loadingView = findViewById(R.id.LoadingView);
-        mVideoView.setBufferingIndicator(loadingView);
+        mLoadingView = findViewById(R.id.LoadingView);
+        mVideoView.setBufferingIndicator(mLoadingView);
+        mLoadingView.setVisibility(View.VISIBLE);
 
         mVideoPath = getIntent().getStringExtra("videoPath");
 
@@ -70,7 +78,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setVideoPath(mVideoPath);
 
         // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, false, isLiveStreaming == 1);
+        mMediaController = new MediaController(this, false, isLiveStreaming==1);
         mVideoView.setMediaController(mMediaController);
     }
 
@@ -130,6 +138,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
+            boolean isNeedReconnect = false;
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
@@ -143,35 +152,42 @@ public class PLVideoViewActivity extends AppCompatActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
                     showToastTips("Connection timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
                     showToastTips("Empty playlist !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
                     showToastTips("Stream disconnected !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
                     showToastTips("Network IO Error !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
                     showToastTips("Unauthorized Error !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
                     showToastTips("Prepare timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                    break;
                 default:
                     showToastTips("unknown error !");
                     break;
             }
-            // Todo pls handle the error status here, retry or call finish()
-            finish();
-            // If you want to retry, do like this:
-            // mVideoView.setVideoPath(mVideoPath);
-            // mVideoView.start();
+            // Todo pls handle the error status here, reconnect or call finish()
+            if (isNeedReconnect) {
+                sendReconnectMessage();
+            } else {
+                finish();
+            }
             // Return true means the error has been handled
             // If return false, then `onCompletion` will be called
             return true;
@@ -222,5 +238,31 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 mToast.show();
             }
         });
+    }
+
+    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what != MESSAGE_ID_RECONNECTING) {
+                return;
+            }
+            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
+                finish();
+                return;
+            }
+            if (!Utils.isNetworkAvailable(PLVideoViewActivity.this)) {
+                sendReconnectMessage();
+                return;
+            }
+            mVideoView.setVideoPath(mVideoPath);
+            mVideoView.start();
+        }
+    };
+
+    private void sendReconnectMessage() {
+        showToastTips("正在重连...");
+        mLoadingView.setVisibility(View.VISIBLE);
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
     }
 }
