@@ -3,7 +3,6 @@ package com.pili.pldroid.playerdemo;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -28,7 +27,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  *  This is a demo activity of com.pili.pldroid.player.widget.VideoView
  *  @deprecated Use {@link PLVideoView} instead.
  */
-public class VideoViewActivity extends AppCompatActivity implements
+public class VideoViewActivity extends VideoPlayerBaseActivity implements
         IjkMediaPlayer.OnCompletionListener,
         IjkMediaPlayer.OnInfoListener,
         IjkMediaPlayer.OnErrorListener,
@@ -58,7 +57,6 @@ public class VideoViewActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_video_view);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);

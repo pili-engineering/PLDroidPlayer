@@ -26,7 +26,7 @@ import java.io.IOException;
 /**
  *  This demo shows how to use PLMediaPlayer API playing video stream
  */
-public class PLMediaPlayerActivity extends AppCompatActivity {
+public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private static final String TAG = PLMediaPlayerActivity.class.getSimpleName();
 
@@ -48,7 +48,6 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_player);
         mLoadingView = findViewById(R.id.LoadingView);

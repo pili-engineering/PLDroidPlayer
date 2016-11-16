@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
@@ -17,9 +16,9 @@ import com.pili.pldroid.playerdemo.utils.Utils;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 
 /**
- *  This is a demo activity of PLVideoView
+ * This is a demo activity of PLVideoView
  */
-public class PLVideoViewActivity extends AppCompatActivity {
+public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
     private static final String TAG = PLVideoViewActivity.class.getSimpleName();
 
@@ -32,14 +31,16 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private boolean mIsActivityPaused = true;
     private View mLoadingView;
+    private View mCoverView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pl_video_view);
         mVideoView = (PLVideoView) findViewById(R.id.VideoView);
 
+        mCoverView = (ImageView) findViewById(R.id.CoverView);
+        mVideoView.setCoverView(mCoverView);
         mLoadingView = findViewById(R.id.LoadingView);
         mVideoView.setBufferingIndicator(mLoadingView);
         mLoadingView.setVisibility(View.VISIBLE);
@@ -78,7 +79,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setVideoPath(mVideoPath);
 
         // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, false, isLiveStreaming==1);
+        mMediaController = new MediaController(this, false, isLiveStreaming == 1);
         mVideoView.setMediaController(mMediaController);
     }
 
@@ -214,7 +215,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         @Override
         public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "onSeekComplete !");
-        };
+        }
     };
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {

@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
@@ -18,7 +17,7 @@ import com.pili.pldroid.playerdemo.widget.MediaController;
 /**
  *  This is a demo activity of PLVideoTextureView
  */
-public class PLVideoTextureActivity extends AppCompatActivity {
+public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
 
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
 
@@ -29,18 +28,19 @@ public class PLVideoTextureActivity extends AppCompatActivity {
     private int mRotation = 0;
     private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_FIT_PARENT; //default
     private View mLoadingView;
+    private View mCoverView = null;
     private boolean mIsActivityPaused = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_pl_video_texture);
         mVideoView = (PLVideoTextureView) findViewById(R.id.VideoView);
-
         mLoadingView = findViewById(R.id.LoadingView);
         mVideoView.setBufferingIndicator(mLoadingView);
         mLoadingView.setVisibility(View.VISIBLE);
+        mCoverView = (ImageView) findViewById(R.id.CoverView);
+        mVideoView.setCoverView(mCoverView);
 
         mVideoPath = getIntent().getStringExtra("videoPath");
 
