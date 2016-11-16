@@ -2,6 +2,7 @@ package com.pili.pldroid.playerdemo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
+
+        TextView mVersionInfoTextView = (TextView) findViewById(R.id.version_info);
+        mVersionInfoTextView.setText("Version: " + BuildConfig.VERSION_NAME);
 
         mEditText = (EditText)findViewById(R.id.VideoPathEdit);
         mEditText.setText(DEFAULT_TEST_URL);

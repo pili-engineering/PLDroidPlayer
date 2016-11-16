@@ -2,13 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/version_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pls_choose_activity"
         android:layout_margin="15dp"
+        android:text="@string/pls_choose_activity"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -16,13 +24,13 @@
         android:id="@+id/TestSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pls_choose_setting"
         android:layout_margin="15dp"
+        android:text="@string/pls_choose_setting"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -30,23 +38,23 @@
         android:id="@+id/StreamingTypeRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/RadioLiveStreaming"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/live_streaming"
-            android:checked="true" />
+            android:checked="true"
+            android:text="@string/live_streaming" />
 
         <RadioButton
             android:id="@+id/RadioPlayback"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/playback"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            android:text="@string/playback" />
 
     </RadioGroup>
 
@@ -54,33 +62,33 @@
         android:id="@+id/DecodeTypeRadioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp" >
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/RadioSWDecode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sw_decode"
-            android:checked="true" />
+            android:checked="true"
+            android:text="@string/sw_decode" />
 
         <RadioButton
             android:id="@+id/RadioHWDecode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hw_decode"
-            android:layout_marginLeft="10dp" />
+            android:layout_marginLeft="10dp"
+            android:text="@string/hw_decode" />
 
     </RadioGroup>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/pls_choose_videopath"
-        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/pls_choose_videopath"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -88,32 +96,32 @@
         android:id="@+id/VideoPathEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:hint="@string/input_video_path"
-        android:singleLine="true"
-        android:textSize="18sp"
         android:padding="10sp"
-        android:layout_margin="10dp" />
+        android:singleLine="true"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="10dp" >
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:onClick="onClickLocalFile"
             android:text="@string/btn_local_file"
-            android:textSize="12sp"
-            android:onClick="onClickLocalFile" />
+            android:textSize="12sp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_click_play"
-            android:textSize="12sp"
+            android:layout_marginLeft="10dp"
             android:onClick="onClickPlay"
-            android:layout_marginLeft="10dp" />
+            android:text="@string/btn_click_play"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

@@ -119,9 +119,11 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     }
 
     public void release() {
-        mMediaPlayer.stop();
-        mMediaPlayer.release();
-        mMediaPlayer = null;
+        if (mMediaPlayer != null) {
+            mMediaPlayer.stop();
+            mMediaPlayer.release();
+            mMediaPlayer = null;
+        }
     }
 
     private void prepare() {
