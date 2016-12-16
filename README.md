@@ -21,6 +21,9 @@ PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可�
 - [x] 支持首屏秒开
 - [x] 支持直播累积延时优化
 - [x] 支持带 IP 地址的播放 URL
+- [x] 支持设置封面
+- [x] 支持软硬解自动切换
+- [x] 支持 HTTPS 协议、speex 解码、mp4v 解码
 - [x] 可高度定制化的 `MediaController`
 - [x] 支持 ARM, ARMv7a, ARM64v8a, X86 主流芯片体系架构
 
