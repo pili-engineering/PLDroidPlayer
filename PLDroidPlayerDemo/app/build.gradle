@@ -8,8 +8,8 @@ android {
         applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 4
-        versionName "1.4.0"
+        versionCode 7
+        versionName "1.4.1"
     }
     buildTypes {
         release {
@@ -20,7 +20,8 @@ android {
 }
 
 dependencies {
-    compile files('libs/pldroid-player-1.4.0.jar')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile files('libs/pldroid-player-1.4.1.jar')
     compile 'com.android.support:appcompat-v7:22+'
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'

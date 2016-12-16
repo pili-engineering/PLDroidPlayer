@@ -80,6 +80,13 @@
             android:layout_marginLeft="10dp"
             android:text="@string/hw_decode" />
 
+        <RadioButton
+            android:id="@+id/RadioAutoDecode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/auto_decode" />
+
     </RadioGroup>
 
     <TextView

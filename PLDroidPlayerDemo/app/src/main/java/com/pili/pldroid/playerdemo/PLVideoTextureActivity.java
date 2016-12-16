@@ -30,6 +30,29 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     private View mLoadingView;
     private View mCoverView = null;
     private boolean mIsActivityPaused = true;
+    private int mIsLiveStreaming = 1;
+
+    private void setOptions(int codecType) {
+        AVOptions options = new AVOptions();
+
+        // the unit of timeout is ms
+        options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
+        options.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
+        // Some optimization with buffering mechanism when be set to 1
+        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming);
+        if (mIsLiveStreaming == 1) {
+            options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
+        }
+
+        // 1 -> hw codec enable, 0 -> disable [recommended]
+        options.setInteger(AVOptions.KEY_MEDIACODEC, codecType);
+
+        // whether start play automatically after prepared, default value is 1
+        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
+        mVideoView.setAVOptions(options);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,33 +77,17 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         // }
 
         mVideoPath = getIntent().getStringExtra("videoPath");
-
-        AVOptions options = new AVOptions();
-
-        int isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
-        // the unit of timeout is ms
-        options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-        // Some optimization with buffering mechanism when be set to 1
-        options.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
-        if (isLiveStreaming == 1) {
-            options.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
-        }
+        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
-        int codec = getIntent().getIntExtra("mediaCodec", 0);
-        options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
-
-        // whether start play automatically after prepared, default value is 1
-        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
-
-        mVideoView.setAVOptions(options);
+        int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
+        setOptions(codec);
 
         // You can mirror the display
         // mVideoView.setMirror(true);
 
         // You can also use a custom `MediaController` widget
-        mMediaController = new MediaController(this, false, isLiveStreaming==1);
+        mMediaController = new MediaController(this, false, mIsLiveStreaming==1);
         mVideoView.setMediaController(mMediaController);
 
         mVideoView.setOnCompletionListener(mOnCompletionListener);
@@ -178,6 +185,10 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_HW_DECODE_FAILURE:
+                    setOptions(AVOptions.MEDIA_CODEC_SW_DECODE);
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:

@@ -28,8 +28,6 @@
             android:theme="@style/AppThemeFullscreen" />
         <activity android:name=".PLVideoTextureActivity"
             android:theme="@style/AppThemeFullscreen" />
-        <activity android:name=".VideoViewActivity"
-            android:theme="@style/AppThemeFullscreen" />
         <activity android:name=".VideoFileActivity" />
     </application>
 

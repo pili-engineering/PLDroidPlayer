@@ -22,9 +22,10 @@ import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.playerdemo.utils.Utils;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
- *  This demo shows how to use PLMediaPlayer API playing video stream
+ * This demo shows how to use PLMediaPlayer API playing video stream
  */
 public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
@@ -37,7 +38,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     private View mLoadingView;
     private AVOptions mAVOptions;
 
-    private int mSurfaceWidth  = 0;
+    private int mSurfaceWidth = 0;
     private int mSurfaceHeight = 0;
 
     private String mVideoPath = null;
@@ -62,6 +63,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
+        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
         if (isLiveStreaming == 1) {
@@ -69,8 +71,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         }
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
-        int codec = getIntent().getIntExtra("mediaCodec", 0);
-        mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        int iCodec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
+        mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, iCodec);
 
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
@@ -200,14 +202,14 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
         public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height) {
-            Log.i(TAG, "onVideoSizeChanged, width = "+ width + ",height = " + height);
+            Log.i(TAG, "onVideoSizeChanged, width = " + width + ",height = " + height);
             // resize the display window to fit the screen
             if (width != 0 && height != 0) {
-                float ratioW = (float) width/(float) mSurfaceWidth;
-                float ratioH = (float) height/(float) mSurfaceHeight;
+                float ratioW = (float) width / (float) mSurfaceWidth;
+                float ratioH = (float) height / (float) mSurfaceHeight;
                 float ratio = Math.max(ratioW, ratioH);
-                width  = (int) Math.ceil((float)width/ratio);
-                height = (int) Math.ceil((float)height/ratio);
+                width = (int) Math.ceil((float) width / ratio);
+                height = (int) Math.ceil((float) height / ratio);
                 FrameLayout.LayoutParams layout = new FrameLayout.LayoutParams(width, height);
                 layout.gravity = Gravity.CENTER;
                 mSurfaceView.setLayoutParams(layout);
@@ -235,6 +237,12 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     mLoadingView.setVisibility(View.GONE);
+                    HashMap<String, String> meta = mMediaPlayer.getMetadata();
+                    Log.i(TAG, "meta: " + meta.toString());
+                    showToastTips(meta.toString());
+                    break;
+                case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
+                    Log.i(TAG, "Hardware decoding failure, switching software decoding!");
                     break;
                 default:
                     break;
@@ -251,13 +259,12 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     };
 
     /**
-     *  Listen the event of playing complete
-     *  For playing local file, it's called when reading the file EOF
-     *  For playing network stream, it's called when the buffered bytes played over
-     *
-     *  If setLooping(true) is called, the player will restart automatically
-     *  And ｀onCompletion｀ will not be called
-     *
+     * Listen the event of playing complete
+     * For playing local file, it's called when reading the file EOF
+     * For playing network stream, it's called when the buffered bytes played over
+     * <p>
+     * If setLooping(true) is called, the player will restart automatically
+     * And ｀onCompletion｀ will not be called
      */
     private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
         @Override
@@ -307,6 +314,10 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
+                    isNeedReconnect = true;
+                    break;
+                case PLMediaPlayer.ERROR_CODE_HW_DECODE_FAILURE:
+                    mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
                     isNeedReconnect = true;
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
