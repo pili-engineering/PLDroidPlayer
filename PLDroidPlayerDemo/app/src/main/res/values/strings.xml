@@ -18,6 +18,7 @@
     <string name="decode_config">解码配置</string>
     <string name="sw_decode">软解</string>
     <string name="hw_decode">硬解</string>
+    <string name="auto_decode">自动</string>
 
     <string name="dlg_ok">OK</string>
     <string name="dlg_cancel">Cancel</string>

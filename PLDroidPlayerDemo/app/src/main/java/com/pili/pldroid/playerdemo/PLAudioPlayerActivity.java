@@ -48,6 +48,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
+        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
         if (isLiveStreaming == 1) {
