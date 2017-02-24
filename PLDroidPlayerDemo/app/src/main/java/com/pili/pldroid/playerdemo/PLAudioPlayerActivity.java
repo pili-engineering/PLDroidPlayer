@@ -8,6 +8,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -34,6 +36,58 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     private boolean mIsStopped = false;
     private boolean mIsActivityPaused = true;
     private Toast mToast = null;
+
+    TelephonyManager mTelephonyManager;
+    PhoneStateListener mPhoneStateListener;
+
+    // Listen to the telephone
+    private void startTelephonyListener() {
+        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephonyManager == null) {
+            Log.e(TAG, "Failed to initialize TelephonyManager!!!");
+            return;
+        }
+
+        mPhoneStateListener = new PhoneStateListener() {
+
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                // TODO Auto-generated method stub
+                super.onCallStateChanged(state, incomingNumber);
+                switch (state) {
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_IDLE");
+                        if (mMediaPlayer != null) {
+                            mMediaPlayer.start();
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_OFFHOOK");
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_RINGING: " + incomingNumber);
+                        break;
+                }
+            }
+        };
+
+        try {
+            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopTelephonyListener() {
+        if (mTelephonyManager != null && mPhoneStateListener != null) {
+            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            mTelephonyManager = null;
+            mPhoneStateListener = null;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,11 +120,13 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         prepare();
+        startTelephonyListener();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        stopTelephonyListener();
         release();
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.abandonAudioFocus(null);
