@@ -46,6 +46,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     private boolean mIsActivityPaused = true;
 
     private Toast mToast = null;
+    private boolean mIsLiveStreaming = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
         // Some optimization with buffering mechanism when be set to 1
         mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
-        if (isLiveStreaming == 1) {
+        mIsLiveStreaming = isLiveStreaming == 1;
+        if (mIsLiveStreaming) {
             mAVOptions.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
         }
 
@@ -111,6 +113,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     public void onClickPause(View v) {
         if (mMediaPlayer != null) {
+            Log.d(TAG, "bitrate = " + mMediaPlayer.getVideoBitrate() + " bps, fps = " + mMediaPlayer.getVideoFps() +
+                    ", resolution = " + mMediaPlayer.getResolutionInline());
             mMediaPlayer.pause();
         }
     }
@@ -148,6 +152,9 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
         if (mMediaPlayer != null) {
             mMediaPlayer.setDisplay(mSurfaceView.getHolder());
+            if (!mIsLiveStreaming) {
+                mMediaPlayer.seekTo(mMediaPlayer.getCurrentPosition());
+            }
             return;
         }
 
@@ -201,8 +208,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     };
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
-        public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height) {
-            Log.i(TAG, "onVideoSizeChanged, width = " + width + ",height = " + height);
+        public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height, int videoSar, int videoDen) {
+            Log.d(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
             // resize the display window to fit the screen
             if (width != 0 && height != 0) {
                 float ratioW = (float) width / (float) mSurfaceWidth;

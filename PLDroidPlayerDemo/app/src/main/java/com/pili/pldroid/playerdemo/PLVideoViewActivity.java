@@ -231,8 +231,8 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
         @Override
-        public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height) {
-            Log.d(TAG, "onVideoSizeChanged: " + width + "," + height);
+        public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height, int videoSar, int videoDen) {
+            Log.d(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
         }
     };
 
