@@ -21,15 +21,12 @@
     public int getVideoFps();
 
     public long getVideoBitrate();
-```
-
-## 优化
-
-  - 修复了播放过程中切换前后台出现的频繁缓冲问题，防止弱网下频繁缓冲导致 Loading 动画闪烁 
+``` 
 
 ## 缺陷 
 
   - 修复使用 PLVideoTextureView 硬解从后台切换前台花屏的问题
+  - 修复了播放过程中切换前后台出现的频繁缓冲问题，防止弱网下频繁缓冲导致 Loading 动画闪烁 
 
 ## 更新注意事项
 
