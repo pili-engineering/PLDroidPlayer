@@ -9,7 +9,7 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 8
-        versionName "1.5.0"
+        versionName "1.5.1"
     }
     buildTypes {
         release {
@@ -21,7 +21,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/pldroid-player-1.5.0.jar')
+    compile files('libs/pldroid-player-1.5.1.jar')
     compile 'com.android.support:appcompat-v7:22+'
     compile 'com.qiniu:happy-dns:0.2.+'
 }
