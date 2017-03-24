@@ -55,6 +55,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         mLoadingView = findViewById(R.id.LoadingView);
         mSurfaceView = (SurfaceView) findViewById(R.id.SurfaceView);
         mSurfaceView.getHolder().addCallback(mCallback);
+        mSurfaceWidth = getResources().getDisplayMetrics().widthPixels;
+        mSurfaceHeight = getResources().getDisplayMetrics().heightPixels;
 
         mVideoPath = getIntent().getStringExtra("videoPath");
 
@@ -195,10 +197,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         }
 
         @Override
-        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            mSurfaceWidth = width;
-            mSurfaceHeight = height;
-        }
+        public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {}
 
         @Override
         public void surfaceDestroyed(SurfaceHolder holder) {
