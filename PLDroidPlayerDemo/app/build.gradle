@@ -8,8 +8,8 @@ android {
         applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 8
-        versionName "1.5.1"
+        versionCode 9
+        versionName "1.6.0"
     }
     buildTypes {
         release {
@@ -17,11 +17,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs', 'src/main/jniLibs']
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile files('libs/pldroid-player-1.5.1.jar')
+    compile files('libs/pldroid-player-1.6.0.jar')
     compile 'com.android.support:appcompat-v7:22+'
     compile 'com.qiniu:happy-dns:0.2.+'
 }

@@ -102,7 +102,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         super.onPause();
         mToast = null;
         mIsActivityPaused = true;
-        mVideoView.pause();
     }
 
     @Override

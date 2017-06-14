@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -29,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText mEditText;
     private RadioGroup mStreamingTypeRadioGroup;
     private RadioGroup mDecodeTypeRadioGroup;
+    private CheckBox mEnableRenderingMsg;
 
     public static final String[] TEST_ACTIVITY_ARRAY = {
             "PLMediaPlayerActivity",
@@ -56,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         mStreamingTypeRadioGroup = (RadioGroup) findViewById(R.id.StreamingTypeRadioGroup);
         mDecodeTypeRadioGroup = (RadioGroup) findViewById(R.id.DecodeTypeRadioGroup);
+
+        mEnableRenderingMsg = (CheckBox) findViewById(R.id.enableRenderingMsg);
 
         mActivitySpinner = (Spinner) findViewById(R.id.TestSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
@@ -112,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             intent.putExtra("liveStreaming", 0);
         }
+        intent.putExtra("enableRederingMsg", mEnableRenderingMsg.isChecked()? 1 : 0);
         startActivity(intent);
     }
 

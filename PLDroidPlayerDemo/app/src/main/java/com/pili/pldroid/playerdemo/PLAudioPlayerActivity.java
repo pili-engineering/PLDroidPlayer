@@ -207,7 +207,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(PLMediaPlayer mp) {
+        public void onPrepared(PLMediaPlayer mp, int preparedTime) {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
             mIsStopped = false;
