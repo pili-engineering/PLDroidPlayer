@@ -89,6 +89,14 @@
 
     </RadioGroup>
 
+    <CheckBox
+        android:id="@+id/enableRenderingMsg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:text="回调音视频时间戳" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -36,4 +36,13 @@
         android:layout_margin="10dp"
         android:layout_gravity="bottom" />
 
+    <TextView
+        android:id="@+id/StatInfoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:layout_gravity="top|right"
+        android:layout_margin="20dp" />
+
 </FrameLayout>

@@ -7,14 +7,13 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
@@ -38,6 +37,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     private View mLoadingView;
     private AVOptions mAVOptions;
 
+    private TextView mStatInfoTextView;
+
     private int mSurfaceWidth = 0;
     private int mSurfaceHeight = 0;
 
@@ -48,6 +49,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     private Toast mToast = null;
     private boolean mIsLiveStreaming = false;
 
+    private long mLastUpdateStatTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,11 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         mLoadingView = findViewById(R.id.LoadingView);
         mSurfaceView = (SurfaceView) findViewById(R.id.SurfaceView);
         mSurfaceView.getHolder().addCallback(mCallback);
+
+        mStatInfoTextView = (TextView) findViewById(R.id.StatInfoTextView);
+
+        mSurfaceWidth = getResources().getDisplayMetrics().widthPixels;
+        mSurfaceHeight = getResources().getDisplayMetrics().heightPixels;
 
         mVideoPath = getIntent().getStringExtra("videoPath");
 
@@ -78,6 +86,11 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
         // whether start play automatically after prepared, default value is 1
         mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+
+        // enable audio/video rendering msg callback
+        int isEnablRenderingMsg = getIntent().getIntExtra("enableRederingMsg", 0);
+        mAVOptions.setInteger(AVOptions.KEY_AUDIO_RENDER_MSG, isEnablRenderingMsg);
+        mAVOptions.setInteger(AVOptions.KEY_VIDEO_RENDER_MSG, isEnablRenderingMsg);
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -113,8 +126,6 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     public void onClickPause(View v) {
         if (mMediaPlayer != null) {
-            Log.d(TAG, "bitrate = " + mMediaPlayer.getVideoBitrate() + " bps, fps = " + mMediaPlayer.getVideoFps() +
-                    ", resolution = " + mMediaPlayer.getResolutionInline());
             mMediaPlayer.pause();
         }
     }
@@ -196,8 +207,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
         @Override
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-            mSurfaceWidth = width;
-            mSurfaceHeight = height;
+
         }
 
         @Override
@@ -209,7 +219,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
         public void onVideoSizeChanged(PLMediaPlayer mp, int width, int height, int videoSar, int videoDen) {
-            Log.d(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
+            Log.i(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height + ", sar = " + videoSar + ", den = " + videoDen);
             // resize the display window to fit the screen
             if (width != 0 && height != 0) {
                 float ratioW = (float) width / (float) mSurfaceWidth;
@@ -226,8 +236,10 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(PLMediaPlayer mp) {
-            Log.i(TAG, "On Prepared !");
+        public void onPrepared(PLMediaPlayer mp, int preparedTime) {
+            Log.i(TAG, "On Prepared ! prepared time = " + preparedTime + " ms");
+            HashMap<String, String> meta = mMediaPlayer.getMetadata();
+            Log.i(TAG, "metadata: " + meta.toString());
             mMediaPlayer.start();
             mIsStopped = false;
         }
@@ -242,11 +254,17 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                     mLoadingView.setVisibility(View.VISIBLE);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                    mLoadingView.setVisibility(View.GONE);
+                    break;
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     mLoadingView.setVisibility(View.GONE);
-                    HashMap<String, String> meta = mMediaPlayer.getMetadata();
-                    Log.i(TAG, "meta: " + meta.toString());
-                    showToastTips(meta.toString());
+                    showToastTips("first video render time: " + extra + "ms");
+                    break;
+                case PLMediaPlayer.MEDIA_INFO_VIDEO_GOP_TIME:
+                    showToastTips("Gop Time: " + extra);
+                    break;
+                case PLMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+                    mLoadingView.setVisibility(View.GONE);
                     break;
                 case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
@@ -262,6 +280,11 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         @Override
         public void onBufferingUpdate(PLMediaPlayer mp, int percent) {
             Log.d(TAG, "onBufferingUpdate: " + percent + "%");
+            long current =  System.currentTimeMillis();
+            if (current - mLastUpdateStatTime > 3000) {
+                mLastUpdateStatTime = current;
+                updateStatInfo();
+            }
         }
     };
 
@@ -386,4 +409,15 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
             prepare();
         }
     };
+
+    private void updateStatInfo() {
+        long bitrate = mMediaPlayer.getVideoBitrate() / 1024;
+        final String stat = bitrate + "kbps, " + mMediaPlayer.getVideoFps() + "fps";
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mStatInfoTextView.setText(stat);
+            }
+        });
+    }
 }

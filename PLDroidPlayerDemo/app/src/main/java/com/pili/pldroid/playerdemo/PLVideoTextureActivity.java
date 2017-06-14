@@ -101,7 +101,6 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     protected void onPause() {
         super.onPause();
         mToast = null;
-        mVideoView.pause();
         mIsActivityPaused = true;
     }
 
