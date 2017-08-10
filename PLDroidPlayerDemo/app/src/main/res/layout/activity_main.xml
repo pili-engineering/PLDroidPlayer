@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <TextView
@@ -89,13 +95,41 @@
 
     </RadioGroup>
 
-    <CheckBox
-        android:id="@+id/enableRenderingMsg"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:text="回调音视频时间戳" />
+        android:layout_marginTop="5dp" >
+
+    <CheckBox
+        android:id="@+id/CacheCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cache"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp" >
+
+        <CheckBox
+            android:id="@+id/VideoCallback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vcallback"/>
+
+        <CheckBox
+            android:id="@+id/AudioCallback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/acallback"/>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -128,16 +162,25 @@
             android:layout_height="wrap_content"
             android:onClick="onClickLocalFile"
             android:text="@string/btn_local_file"
-            android:textSize="12sp" />
+            android:textSize="12sp"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:onClick="onClickScanQrcode"
+            android:text="@string/btn_scan_Qrcode"
+            android:textSize="12sp"
+            android:layout_marginLeft="5dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:onClick="onClickPlay"
             android:text="@string/btn_click_play"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_marginLeft="5dp"/>
 
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

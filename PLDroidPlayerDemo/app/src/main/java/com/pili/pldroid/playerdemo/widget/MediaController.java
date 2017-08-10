@@ -74,6 +74,13 @@ public class MediaController extends FrameLayout implements IMediaController {
     private AudioManager mAM;
     private Runnable mLastSeekBarRunnable;
     private boolean mDisableProgress = false;
+    private OnClickSpeedAdjustListener mOnClickSpeedAdjustListener;
+
+    public interface OnClickSpeedAdjustListener {
+        void onClickNormal();
+        void onClickFaster();
+        void onClickSlower();
+    }
 
     public MediaController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -97,6 +104,10 @@ public class MediaController extends FrameLayout implements IMediaController {
     public MediaController(Context context, boolean useFastForward) {
         this(context);
         mUseFastForward = useFastForward;
+    }
+
+    public void setOnClickSpeedAdjustListener(OnClickSpeedAdjustListener listener) {
+        mOnClickSpeedAdjustListener = listener;
     }
 
     private boolean initController(Context context) {
@@ -340,6 +351,9 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private OnClickListener mPauseListener = new OnClickListener() {
         public void onClick(View v) {
+            if (mOnClickSpeedAdjustListener != null) {
+                mOnClickSpeedAdjustListener.onClickNormal();
+            }
             doPauseResume();
             show(sDefaultTimeout);
         }
@@ -407,22 +421,18 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private OnClickListener mRewListener = new OnClickListener() {
         public void onClick(View v) {
-            long pos = mPlayer.getCurrentPosition();
-            pos -= 5000; // milliseconds
-            mPlayer.seekTo(pos);
-            setProgress();
-
+            if (mOnClickSpeedAdjustListener != null) {
+                mOnClickSpeedAdjustListener.onClickSlower();
+            }
             show(sDefaultTimeout);
         }
     };
 
     private OnClickListener mFfwdListener = new OnClickListener() {
         public void onClick(View v) {
-            long pos = mPlayer.getCurrentPosition();
-            pos += 15000; // milliseconds
-            mPlayer.seekTo(pos);
-            setProgress();
-
+            if (mOnClickSpeedAdjustListener != null) {
+                mOnClickSpeedAdjustListener.onClickFaster();
+            }
             show(sDefaultTimeout);
         }
     };
