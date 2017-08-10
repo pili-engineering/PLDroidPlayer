@@ -20,14 +20,19 @@
     <string name="hw_decode">硬解</string>
     <string name="auto_decode">自动</string>
 
+    <string name="cache">离线缓存（只支持mp4点播）</string>
+    <string name="vcallback">视频数据回调</string>
+    <string name="acallback">音频数据回调</string>
+
     <string name="dlg_ok">OK</string>
     <string name="dlg_cancel">Cancel</string>
 
-    <string name="pls_choose_activity">[请选择测试 Activity]:</string>
+    <string name="pls_choose_activity">[请选择测试的播放接口]:</string>
     <string name="pls_choose_videopath">[输入或选择视频地址]:</string>
     <string name="pls_choose_setting">[请选择播放配置]:</string>
     <string name="input_video_path">手动输入测试视频地址</string>
     <string name="btn_local_file">本地文件</string>
+    <string name="btn_scan_Qrcode">扫描二维码</string>
     <string name="btn_play_setting">播放配置</string>
     <string name="btn_click_play">点击播放</string>
 

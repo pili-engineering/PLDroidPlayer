@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 9
-        versionName "1.6.0"
+        versionCode 10
+        versionName "2.0.0"
     }
     buildTypes {
         release {
@@ -26,7 +26,9 @@ android {
 }
 
 dependencies {
-    compile files('libs/pldroid-player-1.6.0.jar')
+    compile files('libs/pldroid-player-2.0.0.jar')
     compile 'com.android.support:appcompat-v7:22+'
     compile 'com.qiniu:happy-dns:0.2.+'
+    compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
+    compile 'com.google.zxing:core:3.2.0'
 }

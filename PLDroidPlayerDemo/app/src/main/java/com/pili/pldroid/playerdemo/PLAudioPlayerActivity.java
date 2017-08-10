@@ -3,9 +3,6 @@ package com.pili.pldroid.playerdemo;
 import android.content.Context;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.os.PowerManager;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.PhoneStateListener;
@@ -16,7 +13,6 @@ import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
-import com.pili.pldroid.playerdemo.utils.Utils;
 
 import java.io.IOException;
 
@@ -27,67 +23,15 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
 
     private static final String TAG = PLAudioPlayerActivity.class.getSimpleName();
 
-    private static final int MESSAGE_ID_RECONNECTING = 0x01;
-
     private PLMediaPlayer mMediaPlayer;
     private String mAudioPath;
     private View mLoadingView;
     private AVOptions mAVOptions;
     private boolean mIsStopped = false;
-    private boolean mIsActivityPaused = true;
     private Toast mToast = null;
 
-    TelephonyManager mTelephonyManager;
-    PhoneStateListener mPhoneStateListener;
-
-    // Listen to the telephone
-    private void startTelephonyListener() {
-        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (mTelephonyManager == null) {
-            Log.e(TAG, "Failed to initialize TelephonyManager!!!");
-            return;
-        }
-
-        mPhoneStateListener = new PhoneStateListener() {
-
-            @Override
-            public void onCallStateChanged(int state, String incomingNumber) {
-                // TODO Auto-generated method stub
-                super.onCallStateChanged(state, incomingNumber);
-                switch (state) {
-                    case TelephonyManager.CALL_STATE_IDLE:
-                        Log.d(TAG, "PhoneStateListener: CALL_STATE_IDLE");
-                        if (mMediaPlayer != null) {
-                            mMediaPlayer.start();
-                        }
-                        break;
-                    case TelephonyManager.CALL_STATE_OFFHOOK:
-                        Log.d(TAG, "PhoneStateListener: CALL_STATE_OFFHOOK");
-                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
-                            mMediaPlayer.pause();
-                        }
-                        break;
-                    case TelephonyManager.CALL_STATE_RINGING:
-                        Log.d(TAG, "PhoneStateListener: CALL_STATE_RINGING: " + incomingNumber);
-                        break;
-                }
-            }
-        };
-
-        try {
-            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void stopTelephonyListener() {
-        if (mTelephonyManager != null && mPhoneStateListener != null) {
-            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
-            mTelephonyManager = null;
-            mPhoneStateListener = null;
-        }
-    }
+    private TelephonyManager mTelephonyManager;
+    private PhoneStateListener mPhoneStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,24 +41,11 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         mAudioPath = getIntent().getStringExtra("videoPath");
 
         mAVOptions = new AVOptions();
-
-        int isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
         // the unit of timeout is ms
         mAVOptions.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-        mAVOptions.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 10 * 1000);
-        mAVOptions.setInteger(AVOptions.KEY_PROBESIZE, 128 * 1024);
-        // Some optimization with buffering mechanism when be set to 1
-        mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming);
-        if (isLiveStreaming == 1) {
-            mAVOptions.setInteger(AVOptions.KEY_DELAY_OPTIMIZATION, 1);
-        }
-
         // 1 -> hw codec enable, 0 -> disable [recommended]
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, codec);
-
-        // whether start play automatically after prepared, default value is 1
-        mAVOptions.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -135,14 +66,11 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mIsActivityPaused = false;
-        // mMediaPlayer.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mIsActivityPaused = true;
         // mMediaPlayer.pause();
     }
 
@@ -186,6 +114,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     private void prepare() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new PLMediaPlayer(getApplicationContext(), mAVOptions);
+            mMediaPlayer.setDebugLoggingEnabled(true);
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnErrorListener(mOnErrorListener);
@@ -196,10 +125,6 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         try {
             mMediaPlayer.setDataSource(mAudioPath);
             mMediaPlayer.prepareAsync();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -258,67 +183,78 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer mp, int errorCode) {
-            boolean isNeedReconnect = false;
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("Invalid URL !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("404 resource not found !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    showToastTips("Connection refused !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showToastTips("Connection timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
-                    isNeedReconnect = true;
-                    break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("Network IO Error !");
-                    isNeedReconnect = true;
+                    /**
+                     * SDK will do reconnecting automatically
+                     */
+                    showToastTips("IO Error !");
+                    return false;
+                case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
+                    showToastTips("failed to open player !");
                     break;
-                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
-                    showToastTips("Unauthorized Error !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    showToastTips("Read frame timeout !");
-                    isNeedReconnect = true;
-                    break;
-                case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                case PLMediaPlayer.ERROR_CODE_SEEK_FAILED:
+                    showToastTips("failed to seek !");
                     break;
                 default:
                     showToastTips("unknown error !");
                     break;
             }
-            // Todo pls handle the error status here, reconnect or call finish()
-            release();
-            if (isNeedReconnect) {
-                sendReconnectMessage();
-            } else {
-                finish();
-            }
-            // Return true means the error has been handled
-            // If return false, then `onCompletion` will be called
+            finish();
             return true;
         }
     };
 
-    private void showToastTips(final String tips) {
-        if (mIsActivityPaused) {
+    // Listen to the telephone
+    private void startTelephonyListener() {
+        mTelephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephonyManager == null) {
+            Log.e(TAG, "Failed to initialize TelephonyManager!!!");
             return;
         }
+
+        mPhoneStateListener = new PhoneStateListener() {
+
+            @Override
+            public void onCallStateChanged(int state, String incomingNumber) {
+                super.onCallStateChanged(state, incomingNumber);
+                switch (state) {
+                    case TelephonyManager.CALL_STATE_IDLE:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_IDLE");
+                        if (mMediaPlayer != null) {
+                            mMediaPlayer.start();
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_OFFHOOK:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_OFFHOOK");
+                        if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
+                            mMediaPlayer.pause();
+                        }
+                        break;
+                    case TelephonyManager.CALL_STATE_RINGING:
+                        Log.d(TAG, "PhoneStateListener: CALL_STATE_RINGING: " + incomingNumber);
+                        break;
+                }
+            }
+        };
+
+        try {
+            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_CALL_STATE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void stopTelephonyListener() {
+        if (mTelephonyManager != null && mPhoneStateListener != null) {
+            mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_NONE);
+            mTelephonyManager = null;
+            mPhoneStateListener = null;
+        }
+    }
+
+    private void showToastTips(final String tips) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -330,30 +266,4 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
             }
         });
     }
-
-    private void sendReconnectMessage() {
-        showToastTips("正在重连...");
-        mLoadingView.setVisibility(View.VISIBLE);
-        mHandler.removeCallbacksAndMessages(null);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
-    }
-
-    protected Handler mHandler = new Handler(Looper.getMainLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what != MESSAGE_ID_RECONNECTING) {
-                return;
-            }
-            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
-                finish();
-                return;
-            }
-            if (!Utils.isNetworkAvailable(PLAudioPlayerActivity.this)) {
-                sendReconnectMessage();
-                return;
-            }
-            // The PLMediaPlayer has moved to the Error state, if you want to retry, must reset first !
-            prepare();
-        }
-    };
 }
