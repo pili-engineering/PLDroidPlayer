@@ -8,7 +8,7 @@
 
 ## 版本
 
-- 发布 pldroid-player-2.2.0.jar
+- 发布 pldroid-player-2.0.0.jar
 - 发布 libQPlayer.so
 - 发布 libqcCodec.so
 - 删除 pldroidplayer.so
