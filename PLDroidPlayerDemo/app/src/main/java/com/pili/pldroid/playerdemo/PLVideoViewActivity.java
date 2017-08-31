@@ -76,6 +76,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView.setOnAudioFrameListener(mOnAudioFrameListener);
 
         mVideoView.setVideoPath(videoPath);
+        mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
 
         // You can also use a custom `MediaController` widget
         MediaController mediaController = new MediaController(this, !isLiveStreaming, isLiveStreaming);
@@ -177,7 +178,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     /**
                      * SDK will do reconnecting automatically
                      */
-                    showToastTips("IO Error !");
+                    Log.e(TAG, "IO Error!");
                     return false;
                 case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
                     showToastTips("failed to open player !");
@@ -220,7 +221,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private PLMediaPlayer.OnVideoFrameListener mOnVideoFrameListener = new PLMediaPlayer.OnVideoFrameListener() {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
-            Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", i420, " + ts);
+            Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
         }
     };
 

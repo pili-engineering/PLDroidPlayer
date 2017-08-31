@@ -102,11 +102,17 @@
         android:layout_marginLeft="15dp"
         android:layout_marginTop="5dp" >
 
-    <CheckBox
-        android:id="@+id/CacheCheckBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/cache"/>
+        <CheckBox
+            android:id="@+id/CacheCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cache"/>
+
+        <CheckBox
+            android:id="@+id/LoopCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loop"/>
 
     </LinearLayout>
 

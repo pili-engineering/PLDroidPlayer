@@ -115,6 +115,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         if (mMediaPlayer == null) {
             mMediaPlayer = new PLMediaPlayer(getApplicationContext(), mAVOptions);
             mMediaPlayer.setDebugLoggingEnabled(true);
+            mMediaPlayer.setLooping(getIntent().getBooleanExtra("loop", false));
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
             mMediaPlayer.setOnErrorListener(mOnErrorListener);
@@ -177,6 +178,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         @Override
         public void onCompletion(PLMediaPlayer mp) {
             Log.d(TAG, "Play Completed !");
+            finish();
         }
     };
 
