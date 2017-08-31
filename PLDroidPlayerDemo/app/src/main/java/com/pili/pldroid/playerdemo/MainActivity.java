@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup mStreamingTypeRadioGroup;
     private RadioGroup mDecodeTypeRadioGroup;
     private CheckBox mVideoCacheCheckBox;
+    private CheckBox mLoopCheckBox;
     private CheckBox mVideoDataCallback;
     private CheckBox mAudioDataCallback;
 
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         mActivitySpinner.setSelection(2);
 
         mVideoCacheCheckBox = (CheckBox) findViewById(R.id.CacheCheckBox);
+        mLoopCheckBox = (CheckBox) findViewById(R.id.LoopCheckBox);
         mVideoDataCallback = (CheckBox) findViewById(R.id.VideoCallback);
         mAudioDataCallback = (CheckBox) findViewById(R.id.AudioCallback);
     }
@@ -145,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("liveStreaming", 0);
         }
         intent.putExtra("cache", mVideoCacheCheckBox.isChecked());
+        intent.putExtra("loop", mLoopCheckBox.isChecked());
         intent.putExtra("video-data-callback", mVideoDataCallback.isChecked());
         intent.putExtra("audio-data-callback", mAudioDataCallback.isChecked());
         startActivity(intent);

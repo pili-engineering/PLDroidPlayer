@@ -81,6 +81,8 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         mVideoView.setOnCompletionListener(mOnCompletionListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
 
+        mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
+
         mVideoView.setVideoPath(videoPath);
         mVideoView.start();
     }

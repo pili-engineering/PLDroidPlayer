@@ -152,6 +152,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         try {
             mMediaPlayer = new PLMediaPlayer(this, mAVOptions);
             mMediaPlayer.setDebugLoggingEnabled(true);
+            mMediaPlayer.setLooping(getIntent().getBooleanExtra("loop", false));
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
