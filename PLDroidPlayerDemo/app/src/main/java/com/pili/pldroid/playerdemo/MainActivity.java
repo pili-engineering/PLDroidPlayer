@@ -22,6 +22,8 @@ import com.pili.pldroid.player.PLNetworkManager;
 import com.pili.pldroid.playerdemo.utils.GetPathFromUri;
 
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         TextView mVersionInfoTextView = (TextView) findViewById(R.id.version_info);
-        mVersionInfoTextView.setText("版本号: " + BuildConfig.VERSION_NAME);
+        mVersionInfoTextView.setText("版本号: " + BuildConfig.VERSION_NAME + "\n");
+        mVersionInfoTextView.append("编译时间： " + getBuildTimeDescription());
 
         mEditText = (EditText) findViewById(R.id.VideoPathEdit);
         mEditText.setText(DEFAULT_TEST_URL);
@@ -174,5 +177,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    protected String getBuildTimeDescription() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINA).format(BuildConfig.BUILD_TIMESTAMP);
     }
 }
