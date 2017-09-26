@@ -9,7 +9,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 22
         versionCode 10
-        versionName "2.0.1"
+        versionName "2.0.2"
+        buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
         release {
@@ -26,7 +27,7 @@ android {
 }
 
 dependencies {
-    compile files('libs/pldroid-player-2.0.1.jar')
+    compile files('libs/pldroid-player-2.0.2.jar')
     compile 'com.android.support:appcompat-v7:22+'
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'

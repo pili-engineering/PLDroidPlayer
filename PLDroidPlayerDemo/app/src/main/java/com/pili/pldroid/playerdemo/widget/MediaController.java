@@ -258,6 +258,9 @@ public class MediaController extends FrameLayout implements IMediaController {
                     hide();
                     break;
                 case SHOW_PROGRESS:
+                    if (!mPlayer.isPlaying()) {
+                        return;
+                    }
                     pos = setProgress();
                     if (!mDragging && mShowing) {
                         msg = obtainMessage(SHOW_PROGRESS);
@@ -270,8 +273,9 @@ public class MediaController extends FrameLayout implements IMediaController {
     };
 
     private long setProgress() {
-        if (mPlayer == null || mDragging)
+        if (mPlayer == null || mDragging) {
             return 0;
+        }
 
         long position = mPlayer.getCurrentPosition();
         long duration = mPlayer.getDuration();
@@ -388,8 +392,10 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
 
         public void onProgressChanged(SeekBar bar, int progress, boolean fromuser) {
-            if (!fromuser)
+            if (!fromuser) {
                 return;
+            }
+
 
             final long newposition = (long) (mDuration * progress) / 1000;
             String time = generateTime(newposition);
