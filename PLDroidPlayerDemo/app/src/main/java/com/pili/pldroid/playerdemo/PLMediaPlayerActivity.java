@@ -73,6 +73,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         // 1 -> hw codec enable, 0 -> disable [recommended]
         int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        mAVOptions.setInteger(AVOptions.KEY_LIVE_STREAMING, isLiveStreaming ? 1 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!isLiveStreaming && cache) {
             mAVOptions.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);

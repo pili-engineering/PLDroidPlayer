@@ -24,6 +24,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private Toast mToast = null;
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private TextView mStatInfoTextView;
+    private MediaController mMediaController;
+
+    private boolean mIsLiveStreaming;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +34,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         setContentView(R.layout.activity_pl_video_view);
 
         String videoPath = getIntent().getStringExtra("videoPath");
-        boolean isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
+        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
         mVideoView = (PLVideoView) findViewById(R.id.VideoView);
 
@@ -51,8 +54,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
-        if (!isLiveStreaming && cache) {
+        if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
         }
         boolean vcallback = getIntent().getBooleanExtra("video-data-callback", false);
@@ -79,9 +83,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
 
         // You can also use a custom `MediaController` widget
-        MediaController mediaController = new MediaController(this, !isLiveStreaming, isLiveStreaming);
-        mediaController.setOnClickSpeedAdjustListener(mOnClickSpeedAdjustListener);
-        mVideoView.setMediaController(mediaController);
+        mMediaController = new MediaController(this, !mIsLiveStreaming, mIsLiveStreaming);
+        mMediaController.setOnClickSpeedAdjustListener(mOnClickSpeedAdjustListener);
+        mVideoView.setMediaController(mMediaController);
     }
 
     @Override
@@ -93,6 +97,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mVideoView.pause();
         mToast = null;
     }
 
@@ -200,7 +205,10 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         public void onCompletion(PLMediaPlayer plMediaPlayer) {
             Log.i(TAG, "Play Completed !");
             showToastTips("Play Completed !");
-            finish();
+            if (!mIsLiveStreaming) {
+                mMediaController.refreshProgress();
+            }
+            //finish();
         }
     };
 
