@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -20,6 +21,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLNetworkManager;
 import com.pili.pldroid.playerdemo.utils.GetPathFromUri;
+import com.pili.pldroid.playerdemo.utils.PermissionChecker;
 
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -80,12 +82,30 @@ public class MainActivity extends AppCompatActivity {
         mLoopCheckBox = (CheckBox) findViewById(R.id.LoopCheckBox);
         mVideoDataCallback = (CheckBox) findViewById(R.id.VideoCallback);
         mAudioDataCallback = (CheckBox) findViewById(R.id.AudioCallback);
+
+        mVideoCacheCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (!isPermissionOK()) {
+                    mVideoCacheCheckBox.setChecked(false);
+                }
+            }
+        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         PLNetworkManager.getInstance().stopDnsCacheService(this);
+    }
+
+    public boolean isPermissionOK() {
+        PermissionChecker checker = new PermissionChecker(this);
+        boolean isPermissionOK = Build.VERSION.SDK_INT < Build.VERSION_CODES.M || checker.checkPermission();
+        if (!isPermissionOK) {
+            Toast.makeText(this, "Some permissions is not approved !!!", Toast.LENGTH_SHORT).show();
+        }
+        return isPermissionOK;
     }
 
     public void onClickLocalFile(View v) {

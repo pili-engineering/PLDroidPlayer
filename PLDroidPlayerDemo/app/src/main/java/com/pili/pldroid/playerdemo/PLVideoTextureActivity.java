@@ -24,6 +24,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     private int mRotation = 0;
     private int mDisplayAspectRatio = PLVideoTextureView.ASPECT_RATIO_FIT_PARENT; //default
     private TextView mStatInfoTextView;
+    private boolean mIsLiveStreaming;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         setContentView(R.layout.activity_pl_video_texture);
 
         String videoPath = getIntent().getStringExtra("videoPath");
-        boolean isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
+        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
         mVideoView = (PLVideoTextureView) findViewById(R.id.VideoView);
 
@@ -58,10 +59,11 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         AVOptions options = new AVOptions();
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+        options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
         boolean cache = getIntent().getBooleanExtra("cache", false);
-        if (!isLiveStreaming && cache) {
+        if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
         }
         mVideoView.setAVOptions(options);
@@ -71,7 +73,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         // mVideoView.setMirror(true);
 
         // You can also use a custom `MediaController` widget
-        MediaController mediaController = new MediaController(this, !isLiveStreaming, isLiveStreaming);
+        MediaController mediaController = new MediaController(this, !mIsLiveStreaming, mIsLiveStreaming);
         mediaController.setOnClickSpeedAdjustListener(mOnClickSpeedAdjustListener);
         mVideoView.setMediaController(mediaController);
 
@@ -90,6 +92,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mVideoView.pause();
         mToast = null;
     }
 

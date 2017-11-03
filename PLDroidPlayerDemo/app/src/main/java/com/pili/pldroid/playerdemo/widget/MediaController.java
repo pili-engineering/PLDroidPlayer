@@ -106,6 +106,11 @@ public class MediaController extends FrameLayout implements IMediaController {
         mUseFastForward = useFastForward;
     }
 
+    public void refreshProgress() {
+        mProgress.setProgress(1000);
+        mCurrentTime.setText(generateTime(mDuration));
+    }
+
     public void setOnClickSpeedAdjustListener(OnClickSpeedAdjustListener listener) {
         mOnClickSpeedAdjustListener = listener;
     }
@@ -228,6 +233,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         mAnimStyle = animationStyle;
     }
 
+
     public interface OnShownListener {
         public void onShown();
     }
@@ -262,6 +268,9 @@ public class MediaController extends FrameLayout implements IMediaController {
                         return;
                     }
                     pos = setProgress();
+                    if (pos == -1) {
+                        return;
+                    }
                     if (!mDragging && mShowing) {
                         msg = obtainMessage(SHOW_PROGRESS);
                         sendMessageDelayed(msg, 1000 - (pos % 1000));
