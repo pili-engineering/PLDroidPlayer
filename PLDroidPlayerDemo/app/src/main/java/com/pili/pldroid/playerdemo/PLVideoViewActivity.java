@@ -47,6 +47,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
         mStatInfoTextView = (TextView) findViewById(R.id.StatInfoTextView);
 
+
         // 1 -> hw codec enable, 0 -> disable [recommended]
         int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
         AVOptions options = new AVOptions();
@@ -55,6 +56,8 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
+        boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
+        options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
@@ -68,7 +71,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             options.setInteger(AVOptions.KEY_AUDIO_DATA_CALLBACK, 1);
         }
         mVideoView.setAVOptions(options);
-        mVideoView.setDebugLoggingEnabled(true);
+        mVideoView.setDebugLoggingEnabled(!disableLog);
 
         // Set some listeners
         mVideoView.setOnInfoListener(mOnInfoListener);

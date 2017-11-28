@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox mLoopCheckBox;
     private CheckBox mVideoDataCallback;
     private CheckBox mAudioDataCallback;
+    private CheckBox mDisableCheckBox;
 
     public static final String[] TEST_ACTIVITY_ARRAY = {
             "PLMediaPlayerActivity",
@@ -82,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         mLoopCheckBox = (CheckBox) findViewById(R.id.LoopCheckBox);
         mVideoDataCallback = (CheckBox) findViewById(R.id.VideoCallback);
         mAudioDataCallback = (CheckBox) findViewById(R.id.AudioCallback);
+        mDisableCheckBox = (CheckBox) findViewById(R.id.DisableLog);
 
         mVideoCacheCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("loop", mLoopCheckBox.isChecked());
         intent.putExtra("video-data-callback", mVideoDataCallback.isChecked());
         intent.putExtra("audio-data-callback", mAudioDataCallback.isChecked());
+        intent.putExtra("disable-log", mDisableCheckBox.isChecked());
         startActivity(intent);
     }
 
