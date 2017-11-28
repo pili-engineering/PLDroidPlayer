@@ -43,6 +43,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private long mLastUpdateStatTime = 0;
 
+    private boolean mDisableLog = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         if (!isLiveStreaming && cache) {
             mAVOptions.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
         }
+        mDisableLog = getIntent().getBooleanExtra("disable-log", false);
+        mAVOptions.setInteger(AVOptions.KEY_LOG_LEVEL, mDisableLog ? 5 : 0);
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -160,6 +164,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
             mMediaPlayer.setOnErrorListener(mOnErrorListener);
             mMediaPlayer.setOnInfoListener(mOnInfoListener);
             mMediaPlayer.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
+            mMediaPlayer.setDebugLoggingEnabled(!mDisableLog);
             // set replay if completed
             // mMediaPlayer.setLooping(true);
             mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);

@@ -26,12 +26,13 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     private TextView mStatInfoTextView;
     private boolean mIsLiveStreaming;
 
+    String videoPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pl_video_texture);
 
-        String videoPath = getIntent().getStringExtra("videoPath");
+        videoPath = getIntent().getStringExtra("videoPath");
         mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
         mVideoView = (PLVideoTextureView) findViewById(R.id.VideoView);
@@ -62,12 +63,14 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
+        options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
         }
         mVideoView.setAVOptions(options);
-        mVideoView.setDebugLoggingEnabled(true);
+        mVideoView.setDebugLoggingEnabled(!disableLog);
 
         // You can mirror the display
         // mVideoView.setMirror(true);
@@ -82,6 +85,8 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
         mVideoView.setOnCompletionListener(mOnCompletionListener);
         mVideoView.setOnErrorListener(mOnErrorListener);
+        //mVideoView.setOnPreparedListener(mOnPreparedListener);
+        //mVideoView.setOnSeekCompleteListener(mOnSeekCompleteListener);
 
         mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
 
