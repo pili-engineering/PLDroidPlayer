@@ -1,4 +1,4 @@
-# PLDroidPlayer Release Notes for 2.0.4
+# PLDroidPlayer Release Notes for 2.0.5
 
 本次更新:
 
