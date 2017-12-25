@@ -19,6 +19,7 @@
 
 ## 缺陷
 
+- 修复了部分场景下视频 open failed 的问题
 - 修复了部分视频音画不同步的问题
 - 修复了部分视频开播时闪屏的问题
 - 修复了部分视频循环播放时进度异常的问题
@@ -32,7 +33,7 @@
 
 ## 更新注意事项
 
-从 2.0.5 开始，`PLNetworkManager` 类被标记为 deprecated，无需引入 happydns 依赖与调用 `PLNetworkManager.startDnsCacheService`，SDK 会根据 `AVOptions` 中的设置自动处理 DNS 缓存。
+从 2.0.5 开始，`PLNetworkManager` 类被标记为 deprecated，无需引入 happydns 依赖，也无须调用 `PLNetworkManager.startDnsCacheService`，SDK 会根据 `AVOptions` 中的设置自动处理 DNS 缓存。
 
 由于 Android 7.0 使用 BoringSSL 替换了 OpenSSL，一些依赖系统内建 OpenSSL 的程序在一些 7.0+ 的 ROM 里可能会崩溃。如果您的应用 targetSdkVersion >= 24，那么强烈推荐将 libqcOpenSSL.so 加入至 jniLibs 目录。
 
