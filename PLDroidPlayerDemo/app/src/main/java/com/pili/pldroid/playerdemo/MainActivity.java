@@ -23,7 +23,6 @@ import com.pili.pldroid.player.PLNetworkManager;
 import com.pili.pldroid.playerdemo.utils.GetPathFromUri;
 import com.pili.pldroid.playerdemo.utils.PermissionChecker;
 
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
@@ -31,10 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String DEFAULT_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
-
-    private static final String[] DEFAULT_PLAYBACK_DOMAIN_ARRAY = {
-            "live.hkstv.hk.lxdns.com",
-    };
 
     private Spinner mActivitySpinner;
     private EditText mEditText;
@@ -58,32 +53,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        try {
-            PLNetworkManager.getInstance().startDnsCacheService(this, DEFAULT_PLAYBACK_DOMAIN_ARRAY);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        TextView mVersionInfoTextView = (TextView) findViewById(R.id.version_info);
+        TextView mVersionInfoTextView = findViewById(R.id.version_info);
         mVersionInfoTextView.setText("版本号: " + BuildConfig.VERSION_NAME + "\n");
         mVersionInfoTextView.append("编译时间： " + getBuildTimeDescription());
 
-        mEditText = (EditText) findViewById(R.id.VideoPathEdit);
+        mEditText = findViewById(R.id.VideoPathEdit);
         mEditText.setText(DEFAULT_TEST_URL);
 
-        mStreamingTypeRadioGroup = (RadioGroup) findViewById(R.id.StreamingTypeRadioGroup);
-        mDecodeTypeRadioGroup = (RadioGroup) findViewById(R.id.DecodeTypeRadioGroup);
+        mStreamingTypeRadioGroup = findViewById(R.id.StreamingTypeRadioGroup);
+        mDecodeTypeRadioGroup = findViewById(R.id.DecodeTypeRadioGroup);
 
-        mActivitySpinner = (Spinner) findViewById(R.id.TestSpinner);
+        mActivitySpinner = findViewById(R.id.TestSpinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
         mActivitySpinner.setAdapter(adapter);
         mActivitySpinner.setSelection(2);
 
-        mVideoCacheCheckBox = (CheckBox) findViewById(R.id.CacheCheckBox);
-        mLoopCheckBox = (CheckBox) findViewById(R.id.LoopCheckBox);
-        mVideoDataCallback = (CheckBox) findViewById(R.id.VideoCallback);
-        mAudioDataCallback = (CheckBox) findViewById(R.id.AudioCallback);
-        mDisableCheckBox = (CheckBox) findViewById(R.id.DisableLog);
+        mVideoCacheCheckBox = findViewById(R.id.CacheCheckBox);
+        mLoopCheckBox =  findViewById(R.id.LoopCheckBox);
+        mVideoDataCallback = findViewById(R.id.VideoCallback);
+        mAudioDataCallback = findViewById(R.id.AudioCallback);
+        mDisableCheckBox = findViewById(R.id.DisableLog);
 
         mVideoCacheCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
