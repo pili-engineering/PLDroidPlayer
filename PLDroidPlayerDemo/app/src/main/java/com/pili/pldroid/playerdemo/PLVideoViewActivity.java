@@ -36,7 +36,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         String videoPath = getIntent().getStringExtra("videoPath");
         mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
-        mVideoView = (PLVideoView) findViewById(R.id.VideoView);
+        mVideoView = findViewById(R.id.VideoView);
 
         View loadingView = findViewById(R.id.LoadingView);
         loadingView.setVisibility(View.VISIBLE);
@@ -45,7 +45,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         View mCoverView = findViewById(R.id.CoverView);
         mVideoView.setCoverView(mCoverView);
 
-        mStatInfoTextView = (TextView) findViewById(R.id.StatInfoTextView);
+        mStatInfoTextView = findViewById(R.id.StatInfoTextView);
 
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
@@ -170,6 +170,8 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 case PLMediaPlayer.MEDIA_INFO_CONNECTED:
                     Log.i(TAG, "Connected !");
                     break;
+                case PLMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                    Log.i(TAG, "Rotation changed: " + extra);
                 default:
                     break;
             }

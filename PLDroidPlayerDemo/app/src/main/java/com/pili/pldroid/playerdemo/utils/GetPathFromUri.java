@@ -14,7 +14,6 @@ public class GetPathFromUri {
 
     @SuppressLint("NewApi")
     public static String getPath(final Context context, final Uri uri) {
-
         final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
 
         // DocumentProvider
@@ -29,7 +28,10 @@ public class GetPathFromUri {
                     return Environment.getExternalStorageDirectory() + "/" + split[1];
                 }
 
-                // TODO handle non-primary volumes
+                // Good job vivo
+                if ("5D68-9217".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
             }
             // DownloadsProvider
             else if (isDownloadsDocument(uri)) {

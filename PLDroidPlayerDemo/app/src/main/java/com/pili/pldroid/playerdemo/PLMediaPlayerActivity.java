@@ -53,14 +53,14 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         mVideoPath = getIntent().getStringExtra("videoPath");
         boolean isLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
-        Button pauseBtn = (Button) findViewById(R.id.BtnPause);
-        Button resumeBtn = (Button) findViewById(R.id.BtnResume);
+        Button pauseBtn = findViewById(R.id.BtnPause);
+        Button resumeBtn = findViewById(R.id.BtnResume);
 
         mLoadingView = findViewById(R.id.LoadingView);
-        mSurfaceView = (SurfaceView) findViewById(R.id.SurfaceView);
+        mSurfaceView = findViewById(R.id.SurfaceView);
         mSurfaceView.getHolder().addCallback(mCallback);
 
-        mStatInfoTextView = (TextView) findViewById(R.id.StatInfoTextView);
+        mStatInfoTextView = findViewById(R.id.StatInfoTextView);
 
         mSurfaceWidth = getResources().getDisplayMetrics().widthPixels;
         mSurfaceHeight = getResources().getDisplayMetrics().heightPixels;
@@ -257,6 +257,8 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                 case PLMediaPlayer.MEDIA_INFO_CONNECTED:
                     Log.i(TAG, "Connected !");
                     break;
+                case PLMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                    Log.i(TAG, "Rotation changed: " + extra);
                 default:
                     break;
             }

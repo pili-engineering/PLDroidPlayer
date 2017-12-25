@@ -35,7 +35,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         videoPath = getIntent().getStringExtra("videoPath");
         mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1) == 1;
 
-        mVideoView = (PLVideoTextureView) findViewById(R.id.VideoView);
+        mVideoView = findViewById(R.id.VideoView);
 
         View loadingView = findViewById(R.id.LoadingView);
         loadingView.setVisibility(View.VISIBLE);
@@ -44,7 +44,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         View coverView = findViewById(R.id.CoverView);
         mVideoView.setCoverView(coverView);
 
-        mStatInfoTextView = (TextView) findViewById(R.id.StatInfoTextView);
+        mStatInfoTextView = findViewById(R.id.StatInfoTextView);
 
         // If you want to fix display orientation such as landscape, you can use the code show as follow
         //
@@ -178,6 +178,9 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLMediaPlayer.MEDIA_INFO_CONNECTED:
                     Log.i(TAG, "Connected !");
+                    break;
+                case PLMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                    Log.i(TAG, "Rotation changed: " + extra);
                     break;
                 default:
                     break;
