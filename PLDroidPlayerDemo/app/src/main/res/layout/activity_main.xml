@@ -5,193 +5,192 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/version_info"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:textSize="15sp"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="@string/pls_choose_activity"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <Spinner
-        android:id="@+id/TestSpinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:text="@string/pls_choose_setting"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <RadioGroup
-        android:id="@+id/StreamingTypeRadioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/RadioLiveStreaming"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/version_info"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/live_streaming" />
+            android:layout_margin="15dp"
+            android:textSize="15sp"/>
 
-        <RadioButton
-            android:id="@+id/RadioPlayback"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/playback" />
+            android:layout_margin="15dp"
+            android:text="@string/pls_choose_activity"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-    </RadioGroup>
-
-    <RadioGroup
-        android:id="@+id/DecodeTypeRadioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/RadioSWDecode"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/TestSpinner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checked="true"
-            android:text="@string/sw_decode" />
+            android:layout_marginLeft="10dp" />
 
-        <RadioButton
-            android:id="@+id/RadioHWDecode"
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/hw_decode" />
+            android:layout_margin="15dp"
+            android:text="@string/pls_choose_setting"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-        <RadioButton
-            android:id="@+id/RadioAutoDecode"
-            android:layout_width="wrap_content"
+        <RadioGroup
+            android:id="@+id/StreamingTypeRadioGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="@string/auto_decode" />
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-    </RadioGroup>
+            <RadioButton
+                android:id="@+id/RadioLiveStreaming"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/live_streaming" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp" >
+            <RadioButton
+                android:id="@+id/RadioPlayback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/playback" />
 
-        <CheckBox
-            android:id="@+id/CacheCheckBox"
-            android:layout_width="wrap_content"
+        </RadioGroup>
+
+        <RadioGroup
+            android:id="@+id/DecodeTypeRadioGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cache"/>
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/LoopCheckBox"
-            android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/RadioSWDecode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/sw_decode" />
+
+            <RadioButton
+                android:id="@+id/RadioHWDecode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/hw_decode" />
+
+            <RadioButton
+                android:id="@+id/RadioAutoDecode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="@string/auto_decode" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/loop"/>
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp" >
+
+            <CheckBox
+                android:id="@+id/CacheCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cache"/>
+
+            <CheckBox
+                android:id="@+id/LoopCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loop"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="5dp" >
+
+            <CheckBox
+                android:id="@+id/DisableLog"
+                android:text="@string/disable_log"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/VideoCallback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/vcallback"/>
+
+            <CheckBox
+                android:id="@+id/AudioCallback"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/acallback"/>
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/VideoPathEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:hint="@string/input_video_path"
+            android:padding="10sp"
+            android:singleLine="true"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickLocalFile"
+                android:text="@string/btn_local_file"
+                android:textSize="12sp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickScanQrcode"
+                android:text="@string/btn_scan_Qrcode"
+                android:textSize="12sp"
+                android:layout_marginLeft="5dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickPlay"
+                android:text="@string/btn_click_play"
+                android:textSize="12sp"
+                android:layout_marginLeft="5dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onClickList"
+                android:text="@string/btn_click_list"
+                android:textSize="12sp"
+                android:layout_marginLeft="5dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="5dp" >
-
-        <CheckBox
-            android:id="@+id/DisableLog"
-            android:text="@string/disable_log"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <CheckBox
-            android:id="@+id/VideoCallback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/vcallback"/>
-
-        <CheckBox
-            android:id="@+id/AudioCallback"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/acallback"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
-        android:text="@string/pls_choose_videopath"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/VideoPathEdit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="@string/input_video_path"
-        android:padding="10sp"
-        android:singleLine="true"
-        android:textSize="18sp" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClickLocalFile"
-            android:text="@string/btn_local_file"
-            android:textSize="12sp"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClickScanQrcode"
-            android:text="@string/btn_scan_Qrcode"
-            android:textSize="12sp"
-            android:layout_marginLeft="5dp" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClickPlay"
-            android:text="@string/btn_click_play"
-            android:textSize="12sp"
-            android:layout_marginLeft="5dp"/>
-
-    </LinearLayout>
-
-</LinearLayout>
 </ScrollView>

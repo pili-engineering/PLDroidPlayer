@@ -42,6 +42,7 @@
         <activity
             android:name=".PLVideoTextureActivity"
             android:theme="@style/AppThemeFullscreen" />
+        <activity android:name=".PLVideoListActivity"/>
     </application>
 
 </manifest>

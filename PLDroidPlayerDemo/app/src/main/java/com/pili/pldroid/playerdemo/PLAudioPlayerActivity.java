@@ -13,6 +13,11 @@ import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.player.PLOnBufferingUpdateListener;
+import com.pili.pldroid.player.PLOnCompletionListener;
+import com.pili.pldroid.player.PLOnErrorListener;
+import com.pili.pldroid.player.PLOnInfoListener;
+import com.pili.pldroid.player.PLOnPreparedListener;
 
 import java.io.IOException;
 
@@ -114,7 +119,6 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     private void prepare() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new PLMediaPlayer(getApplicationContext(), mAVOptions);
-            mMediaPlayer.setDebugLoggingEnabled(true);
             mMediaPlayer.setLooping(getIntent().getBooleanExtra("loop", false));
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);
@@ -131,37 +135,36 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         }
     }
 
-    private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
+    private PLOnPreparedListener mOnPreparedListener = new PLOnPreparedListener() {
         @Override
-        public void onPrepared(PLMediaPlayer mp, int preparedTime) {
+        public void onPrepared(int preparedTime) {
             Log.i(TAG, "On Prepared !");
             mMediaPlayer.start();
             mIsStopped = false;
         }
     };
 
-    private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
+    private PLOnInfoListener mOnInfoListener = new PLOnInfoListener() {
         @Override
-        public boolean onInfo(PLMediaPlayer mp, int what, int extra) {
+        public void onInfo(int what, int extra) {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
-                case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                case PLOnInfoListener.MEDIA_INFO_BUFFERING_START:
                     mLoadingView.setVisibility(View.VISIBLE);
                     break;
-                case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                case PLMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+                case PLOnInfoListener.MEDIA_INFO_BUFFERING_END:
+                case PLOnInfoListener.MEDIA_INFO_AUDIO_RENDERING_START:
                     mLoadingView.setVisibility(View.GONE);
                     break;
                 default:
                     break;
             }
-            return true;
         }
     };
 
-    private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
+    private PLOnBufferingUpdateListener mOnBufferingUpdateListener = new PLOnBufferingUpdateListener() {
         @Override
-        public void onBufferingUpdate(PLMediaPlayer mp, int percent) {
+        public void onBufferingUpdate(int percent) {
             Log.d(TAG, "onBufferingUpdate: " + percent + "%");
         }
     };
@@ -174,29 +177,29 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
      *  If setLooping(true) is called, the player will restart automatically
      *  And ｀onCompletion｀ will not be called
      */
-    private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
+    private PLOnCompletionListener mOnCompletionListener = new PLOnCompletionListener() {
         @Override
-        public void onCompletion(PLMediaPlayer mp) {
+        public void onCompletion() {
             Log.d(TAG, "Play Completed !");
             finish();
         }
     };
 
-    private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
+    private PLOnErrorListener mOnErrorListener = new PLOnErrorListener() {
         @Override
-        public boolean onError(PLMediaPlayer mp, int errorCode) {
+        public boolean onError(int errorCode) {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
+                case PLOnErrorListener.ERROR_CODE_IO_ERROR:
                     /**
                      * SDK will do reconnecting automatically
                      */
                     showToastTips("IO Error !");
                     return false;
-                case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
+                case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
                     showToastTips("failed to open player !");
                     break;
-                case PLMediaPlayer.ERROR_CODE_SEEK_FAILED:
+                case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
                     showToastTips("failed to seek !");
                     break;
                 default:
