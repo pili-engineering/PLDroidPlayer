@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.pili.pldroid.player.AVOptions;
-import com.pili.pldroid.player.PLNetworkManager;
 import com.pili.pldroid.playerdemo.utils.GetPathFromUri;
 import com.pili.pldroid.playerdemo.utils.PermissionChecker;
 
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         mDecodeTypeRadioGroup = findViewById(R.id.DecodeTypeRadioGroup);
 
         mActivitySpinner = findViewById(R.id.TestSpinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, TEST_ACTIVITY_ARRAY);
         mActivitySpinner.setAdapter(adapter);
         mActivitySpinner.setSelection(2);
 
@@ -87,7 +86,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        PLNetworkManager.getInstance().stopDnsCacheService(this);
     }
 
     public boolean isPermissionOK() {
@@ -124,11 +122,24 @@ public class MainActivity extends AppCompatActivity {
     public void onClickPlay(View v) {
         String videopath = mEditText.getText().toString();
         if (!"".equals(videopath)) {
-            jumpToPlayerActivity(videopath);
+            jumpToPlayerActivity(videopath, false);
         }
     }
 
-    public void jumpToPlayerActivity(String videopath) {
+    public void onClickList(View v) {
+        String videopath = mEditText.getText().toString();
+        if (!"".equals(videopath)) {
+            jumpToPlayerActivity(videopath, true);
+        }
+    }
+
+    public void jumpToPlayerActivity(String videoPath, boolean isList) {
+        if (isList) {
+            Intent intent = new Intent(this, PLVideoListActivity.class);
+            intent.putExtra("videoPath", videoPath);
+            startActivity(intent);
+            return;
+        }
         Class<?> cls;
         switch (mActivitySpinner.getSelectedItemPosition()) {
             case 0:
@@ -147,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
         }
         Intent intent = new Intent(this, cls);
-        intent.putExtra("videoPath", videopath);
+        intent.putExtra("videoPath", videoPath);
         if (mDecodeTypeRadioGroup.getCheckedRadioButtonId() == R.id.RadioHWDecode) {
             intent.putExtra("mediaCodec", AVOptions.MEDIA_CODEC_HW_DECODE);
         } else if (mDecodeTypeRadioGroup.getCheckedRadioButtonId() == R.id.RadioSWDecode) {

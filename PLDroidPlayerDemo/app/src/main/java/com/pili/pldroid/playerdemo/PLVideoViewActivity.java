@@ -7,7 +7,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
-import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.player.PLOnAudioFrameListener;
+import com.pili.pldroid.player.PLOnBufferingUpdateListener;
+import com.pili.pldroid.player.PLOnCompletionListener;
+import com.pili.pldroid.player.PLOnErrorListener;
+import com.pili.pldroid.player.PLOnInfoListener;
+import com.pili.pldroid.player.PLOnVideoFrameListener;
+import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.pili.pldroid.playerdemo.utils.Config;
 import com.pili.pldroid.playerdemo.widget.MediaController;
@@ -39,14 +45,12 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView = findViewById(R.id.VideoView);
 
         View loadingView = findViewById(R.id.LoadingView);
-        loadingView.setVisibility(View.VISIBLE);
         mVideoView.setBufferingIndicator(loadingView);
 
         View mCoverView = findViewById(R.id.CoverView);
         mVideoView.setCoverView(mCoverView);
 
         mStatInfoTextView = findViewById(R.id.StatInfoTextView);
-
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
         int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
@@ -71,7 +75,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             options.setInteger(AVOptions.KEY_AUDIO_DATA_CALLBACK, 1);
         }
         mVideoView.setAVOptions(options);
-        mVideoView.setDebugLoggingEnabled(!disableLog);
 
         // Set some listeners
         mVideoView.setOnInfoListener(mOnInfoListener);
@@ -134,66 +137,65 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         }
     }
 
-    private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
+    private PLOnInfoListener mOnInfoListener = new PLOnInfoListener() {
         @Override
-        public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, int extra) {
+        public void onInfo(int what, int extra) {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
-                case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
+                case PLOnInfoListener.MEDIA_INFO_BUFFERING_START:
                     break;
-                case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
+                case PLOnInfoListener.MEDIA_INFO_BUFFERING_END:
                     break;
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START:
                     showToastTips("first video render time: " + extra + "ms");
                     break;
-                case PLMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START:
+                case PLOnInfoListener.MEDIA_INFO_AUDIO_RENDERING_START:
                     break;
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_FRAME_RENDERING:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_FRAME_RENDERING:
                     Log.i(TAG, "video frame rendering, ts = " + extra);
                     break;
-                case PLMediaPlayer.MEDIA_INFO_AUDIO_FRAME_RENDERING:
+                case PLOnInfoListener.MEDIA_INFO_AUDIO_FRAME_RENDERING:
                     Log.i(TAG, "audio frame rendering, ts = " + extra);
                     break;
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_GOP_TIME:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_GOP_TIME:
                     Log.i(TAG, "Gop Time: " + extra);
                     break;
-                case PLMediaPlayer.MEDIA_INFO_SWITCHING_SW_DECODE:
+                case PLOnInfoListener.MEDIA_INFO_SWITCHING_SW_DECODE:
                     Log.i(TAG, "Hardware decoding failure, switching software decoding!");
                     break;
-                case PLMediaPlayer.MEDIA_INFO_METADATA:
+                case PLOnInfoListener.MEDIA_INFO_METADATA:
                     Log.i(TAG, mVideoView.getMetadata().toString());
                     break;
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_BITRATE:
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_FPS:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_BITRATE:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_FPS:
                     updateStatInfo();
                     break;
-                case PLMediaPlayer.MEDIA_INFO_CONNECTED:
+                case PLOnInfoListener.MEDIA_INFO_CONNECTED:
                     Log.i(TAG, "Connected !");
                     break;
-                case PLMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
+                case PLOnInfoListener.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
                     Log.i(TAG, "Rotation changed: " + extra);
                 default:
                     break;
             }
-            return true;
         }
     };
 
-    private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
+    private PLOnErrorListener mOnErrorListener = new PLOnErrorListener() {
         @Override
-        public boolean onError(PLMediaPlayer mp, int errorCode) {
+        public boolean onError(int errorCode) {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
+                case PLOnErrorListener.ERROR_CODE_IO_ERROR:
                     /**
                      * SDK will do reconnecting automatically
                      */
                     Log.e(TAG, "IO Error!");
                     return false;
-                case PLMediaPlayer.ERROR_CODE_OPEN_FAILED:
+                case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
                     showToastTips("failed to open player !");
                     break;
-                case PLMediaPlayer.ERROR_CODE_SEEK_FAILED:
+                case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
                     showToastTips("failed to seek !");
                     break;
                 default:
@@ -205,9 +207,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         }
     };
 
-    private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
+    private PLOnCompletionListener mOnCompletionListener = new PLOnCompletionListener() {
         @Override
-        public void onCompletion(PLMediaPlayer plMediaPlayer) {
+        public void onCompletion() {
             Log.i(TAG, "Play Completed !");
             showToastTips("Play Completed !");
             if (!mIsLiveStreaming) {
@@ -217,28 +219,28 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         }
     };
 
-    private PLMediaPlayer.OnBufferingUpdateListener mOnBufferingUpdateListener = new PLMediaPlayer.OnBufferingUpdateListener() {
+    private PLOnBufferingUpdateListener mOnBufferingUpdateListener = new PLOnBufferingUpdateListener() {
         @Override
-        public void onBufferingUpdate(PLMediaPlayer plMediaPlayer, int precent) {
+        public void onBufferingUpdate(int precent) {
             Log.i(TAG, "onBufferingUpdate: " + precent);
         }
     };
 
-    private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {
+    private PLOnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLOnVideoSizeChangedListener() {
         @Override
-        public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height) {
+        public void onVideoSizeChanged(int width, int height) {
             Log.i(TAG, "onVideoSizeChanged: width = " + width + ", height = " + height);
         }
     };
 
-    private PLMediaPlayer.OnVideoFrameListener mOnVideoFrameListener = new PLMediaPlayer.OnVideoFrameListener() {
+    private PLOnVideoFrameListener mOnVideoFrameListener = new PLOnVideoFrameListener() {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
             Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
         }
     };
 
-    private PLMediaPlayer.OnAudioFrameListener mOnAudioFrameListener = new PLMediaPlayer.OnAudioFrameListener() {
+    private PLOnAudioFrameListener mOnAudioFrameListener = new PLOnAudioFrameListener() {
         @Override
         public void onAudioFrameAvailable(byte[] data, int size, int samplerate, int channels, int datawidth, long ts) {
             Log.i(TAG, "onAudioFrameAvailable: " + size + ", " + samplerate + ", " + channels + ", " + datawidth + ", " + ts);

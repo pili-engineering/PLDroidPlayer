@@ -33,10 +33,11 @@
     <string name="pls_choose_videopath">[输入或选择视频地址]:</string>
     <string name="pls_choose_setting">[请选择播放配置]:</string>
     <string name="input_video_path">手动输入测试视频地址</string>
-    <string name="btn_local_file">本地文件</string>
-    <string name="btn_scan_Qrcode">扫描二维码</string>
+    <string name="btn_local_file">本地</string>
+    <string name="btn_scan_Qrcode">扫码</string>
     <string name="btn_play_setting">播放配置</string>
-    <string name="btn_click_play">点击播放</string>
+    <string name="btn_click_play">播放</string>
+    <string name="btn_click_list">列表</string>
 
     <string name="btn_start">开始</string>
     <string name="btn_pause">暂停</string>
