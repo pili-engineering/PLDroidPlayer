@@ -159,6 +159,7 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/button_local"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClickLocalFile"
@@ -174,6 +175,7 @@
                 android:layout_marginLeft="5dp" />
 
             <Button
+                android:id="@+id/button_play"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClickPlay"
@@ -182,6 +184,7 @@
                 android:layout_marginLeft="5dp"/>
 
             <Button
+                android:id="@+id/button_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="onClickList"
