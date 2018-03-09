@@ -19,6 +19,8 @@ import com.pili.pldroid.playerdemo.utils.Config;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 import com.pili.pldroid.playerdemo.widget.MediaController.OnClickSpeedAdjustListener;
 
+import java.util.Arrays;
+
 /**
  * This is a demo activity of PLVideoView
  */
@@ -61,6 +63,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
+//        options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
@@ -237,6 +240,19 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
             Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
+            if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && bytesToHex(Arrays.copyOfRange(data, 19, 23)).equals("ts64")) {
+                // If the RTMP stream is from Qiniu
+                // Add &addtssei=true to the end of URL to enable SEI timestamp.
+                // Format of the byte array:
+                // 0:       SEI TYPE                    This is part of h.264 standard.
+                // 1:       unregistered user data      This is part of h.264 standard.
+                // 2:       payload length              This is part of h.264 standard.
+                // 3-18:    uuid                        This is part of h.264 standard.
+                // 19-22:   ts64                        Magic string to mark this stream is from Qiniu
+                // 23-30:   timestamp                   The timestamp
+                // 31:      0x80                        Magic hex in ffmpeg
+                Log.i(TAG,  " timestamp: " + Long.valueOf(bytesToHex(Arrays.copyOfRange(data, 23, 31)), 16));
+            }
         }
     };
 
@@ -266,6 +282,17 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             mVideoView.setPlaySpeed(0X00010002);
         }
     };
+
+    private String bytesToHex(byte[] bytes) {
+        char[] hexArray = "0123456789ABCDEF".toCharArray();
+        char[] hexChars = new char[bytes.length * 2];
+        for (int j = 0; j < bytes.length; j++) {
+            int v = bytes[j] & 0xFF;
+            hexChars[j * 2] = hexArray[v >>> 4];
+            hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+        }
+        return new String(hexChars);
+    }
 
     private void showToastTips(final String tips) {
         runOnUiThread(new Runnable() {
