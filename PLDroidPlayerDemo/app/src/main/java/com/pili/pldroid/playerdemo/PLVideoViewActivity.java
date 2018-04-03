@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLOnAudioFrameListener;
@@ -16,6 +15,7 @@ import com.pili.pldroid.player.PLOnVideoFrameListener;
 import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.pili.pldroid.playerdemo.utils.Config;
+import com.pili.pldroid.playerdemo.utils.Utils;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 import com.pili.pldroid.playerdemo.widget.MediaController.OnClickSpeedAdjustListener;
 
@@ -29,7 +29,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private static final String TAG = PLVideoViewActivity.class.getSimpleName();
 
     private PLVideoView mVideoView;
-    private Toast mToast = null;
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private TextView mStatInfoTextView;
     private MediaController mMediaController;
@@ -107,7 +106,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     protected void onPause() {
         super.onPause();
         mVideoView.pause();
-        mToast = null;
     }
 
     @Override
@@ -121,19 +119,19 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView.setDisplayAspectRatio(mDisplayAspectRatio);
         switch (mVideoView.getDisplayAspectRatio()) {
             case PLVideoView.ASPECT_RATIO_ORIGIN:
-                showToastTips("Origin mode");
+                Utils.showToastTips(this, "Origin mode");
                 break;
             case PLVideoView.ASPECT_RATIO_FIT_PARENT:
-                showToastTips("Fit parent !");
+                Utils.showToastTips(this, "Fit parent !");
                 break;
             case PLVideoView.ASPECT_RATIO_PAVED_PARENT:
-                showToastTips("Paved parent !");
+                Utils.showToastTips(this, "Paved parent !");
                 break;
             case PLVideoView.ASPECT_RATIO_16_9:
-                showToastTips("16 : 9 !");
+                Utils.showToastTips(this, "16 : 9 !");
                 break;
             case PLVideoView.ASPECT_RATIO_4_3:
-                showToastTips("4 : 3 !");
+                Utils.showToastTips(this, "4 : 3 !");
                 break;
             default:
                 break;
@@ -150,7 +148,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 case PLOnInfoListener.MEDIA_INFO_BUFFERING_END:
                     break;
                 case PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START:
-                    showToastTips("first video render time: " + extra + "ms");
+                    Utils.showToastTips(PLVideoViewActivity.this, "first video render time: " + extra + "ms");
                     break;
                 case PLOnInfoListener.MEDIA_INFO_AUDIO_RENDERING_START:
                     break;
@@ -196,13 +194,13 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     Log.e(TAG, "IO Error!");
                     return false;
                 case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
-                    showToastTips("failed to open player !");
+                    Utils.showToastTips(PLVideoViewActivity.this, "failed to open player !");
                     break;
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
-                    showToastTips("failed to seek !");
+                    Utils.showToastTips(PLVideoViewActivity.this, "failed to seek !");
                     break;
                 default:
-                    showToastTips("unknown error !");
+                    Utils.showToastTips(PLVideoViewActivity.this, "unknown error !");
                     break;
             }
             finish();
@@ -214,7 +212,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         @Override
         public void onCompletion() {
             Log.i(TAG, "Play Completed !");
-            showToastTips("Play Completed !");
+            Utils.showToastTips(PLVideoViewActivity.this, "Play Completed !");
             if (!mIsLiveStreaming) {
                 mMediaController.refreshProgress();
             }
@@ -293,20 +291,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         }
         return new String(hexChars);
     }
-
-    private void showToastTips(final String tips) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mToast != null) {
-                    mToast.cancel();
-                }
-                mToast = Toast.makeText(PLVideoViewActivity.this, tips, Toast.LENGTH_SHORT);
-                mToast.show();
-            }
-        });
-    }
-
+    
     private void updateStatInfo() {
         long bitrate = mVideoView.getVideoBitrate() / 1024;
         final String stat = bitrate + "kbps, " + mVideoView.getVideoFps() + "fps";

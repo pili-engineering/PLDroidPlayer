@@ -23,6 +23,7 @@ import com.pili.pldroid.player.PLOnInfoListener;
 import com.pili.pldroid.player.PLOnPreparedListener;
 import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.playerdemo.utils.Config;
+import com.pili.pldroid.playerdemo.utils.Utils;
 
 import java.io.IOException;
 
@@ -134,7 +135,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
     public void onClickStop(View v) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
-            mMediaPlayer.reset();
+            mMediaPlayer.release();
         }
         mIsStopped = true;
         mMediaPlayer = null;
@@ -240,7 +241,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START:
                     mLoadingView.setVisibility(View.GONE);
-                    showToastTips("first video render time: " + extra + "ms");
+                    Utils.showToastTips(PLMediaPlayerActivity.this, "first video render time: " + extra + "ms");
                     break;
                 case PLOnInfoListener.MEDIA_INFO_VIDEO_GOP_TIME:
                     Log.i(TAG, "Gop Time: " + extra);
@@ -293,7 +294,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         @Override
         public void onCompletion() {
             Log.d(TAG, "Play Completed !");
-            showToastTips("Play Completed !");
+            Utils.showToastTips(PLMediaPlayerActivity.this, "Play Completed !");
             finish();
         }
     };
@@ -307,35 +308,22 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
                     /**
                      * SDK will do reconnecting automatically
                      */
-                    showToastTips("IO Error !");
+                    Utils.showToastTips(PLMediaPlayerActivity.this, "IO Error !");
                     return false;
                 case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
-                    showToastTips("failed to open player !");
+                    Utils.showToastTips(PLMediaPlayerActivity.this, "failed to open player !");
                     break;
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
-                    showToastTips("failed to seek !");
+                    Utils.showToastTips(PLMediaPlayerActivity.this, "failed to seek !");
                     break;
                 default:
-                    showToastTips("unknown error !");
+                    Utils.showToastTips(PLMediaPlayerActivity.this, "unknown error !");
                     break;
             }
             finish();
             return true;
         }
     };
-
-    private void showToastTips(final String tips) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mToast != null) {
-                    mToast.cancel();
-                }
-                mToast = Toast.makeText(PLMediaPlayerActivity.this, tips, Toast.LENGTH_SHORT);
-                mToast.show();
-            }
-        });
-    }
 
     private void updateStatInfo() {
         long bitrate = mMediaPlayer.getVideoBitrate() / 1024;

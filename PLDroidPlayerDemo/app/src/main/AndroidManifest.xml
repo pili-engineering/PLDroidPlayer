@@ -42,7 +42,8 @@
         <activity
             android:name=".PLVideoTextureActivity"
             android:theme="@style/AppThemeFullscreen" />
-        <activity android:name=".PLVideoListActivity"/>
+        <activity android:name=".PLVideoListActivity" />
+        <activity android:name=".MultiInstanceActivity"></activity>
     </application>
 
 </manifest>
