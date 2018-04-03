@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             "PLAudioPlayerActivity",
             "PLVideoViewActivity",
             "PLVideoTextureActivity",
+            "MultiInstanceActivity"
     };
 
     @Override
@@ -153,6 +154,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 3:
                 cls = PLVideoTextureActivity.class;
+                break;
+            case 4:
+                cls = MultiInstanceActivity.class;
                 break;
             default:
                 return;

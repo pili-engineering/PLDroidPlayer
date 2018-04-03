@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MultiInstanceActivity">
+
+    <FrameLayout
+        android:id="@+id/first_container"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <com.pili.pldroid.player.widget.PLVideoView
+            android:id="@+id/first_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/first_prepare"
+                android:text="prepare"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/first_play"
+                android:text="play"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/first_download"
+                android:text="no buff"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/first_length"
+                android:text="length"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/second_container"
+        android:layout_below="@id/first_container"
+        android:layout_marginTop="14dp"
+
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <com.pili.pldroid.player.widget.PLVideoView
+            android:id="@+id/second_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/second_prepare"
+                android:text="prepare"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/second_play"
+                android:text="play"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/second_download"
+                android:text="no buff"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/second_length"
+                android:text="length"
+                android:onClick="click"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

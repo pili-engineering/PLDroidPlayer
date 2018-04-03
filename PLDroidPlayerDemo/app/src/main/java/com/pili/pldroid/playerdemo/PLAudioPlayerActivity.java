@@ -18,6 +18,7 @@ import com.pili.pldroid.player.PLOnCompletionListener;
 import com.pili.pldroid.player.PLOnErrorListener;
 import com.pili.pldroid.player.PLOnInfoListener;
 import com.pili.pldroid.player.PLOnPreparedListener;
+import com.pili.pldroid.playerdemo.utils.Utils;
 
 import java.io.IOException;
 
@@ -102,7 +103,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     public void onClickStop(View v) {
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
-            mMediaPlayer.reset();
+            mMediaPlayer.release();
         }
         mIsStopped = true;
         mMediaPlayer = null;
@@ -194,16 +195,16 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
                     /**
                      * SDK will do reconnecting automatically
                      */
-                    showToastTips("IO Error !");
+                    Utils.showToastTips(PLAudioPlayerActivity.this, "IO Error !");
                     return false;
                 case PLOnErrorListener.ERROR_CODE_OPEN_FAILED:
-                    showToastTips("failed to open player !");
+                    Utils.showToastTips(PLAudioPlayerActivity.this, "failed to open player !");
                     break;
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
-                    showToastTips("failed to seek !");
+                    Utils.showToastTips(PLAudioPlayerActivity.this, "failed to seek !");
                     break;
                 default:
-                    showToastTips("unknown error !");
+                    Utils.showToastTips(PLAudioPlayerActivity.this, "unknown error !");
                     break;
             }
             finish();
@@ -257,18 +258,5 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
             mTelephonyManager = null;
             mPhoneStateListener = null;
         }
-    }
-
-    private void showToastTips(final String tips) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (mToast != null) {
-                    mToast.cancel();
-                }
-                mToast = Toast.makeText(PLAudioPlayerActivity.this, tips, Toast.LENGTH_SHORT);
-                mToast.show();
-            }
-        });
     }
 }
