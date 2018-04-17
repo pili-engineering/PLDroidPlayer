@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/scan_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/scan" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="长视频"
+            android:textColor="@android:color/black" />
+
+        <ImageButton
+            android:id="@+id/path_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:src="@drawable/url" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/video_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <FrameLayout
+            android:id="@+id/full_screen_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></FrameLayout>
+
+
+        <com.qiniu.droid.niuplayer.widget.MediaController
+            android:id="@+id/media_controller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    android:background="#C7000000"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/back_image_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:padding="9dp"
+                        android:src="@drawable/player_back" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="9dp"
+                        android:layout_marginLeft="7dp"
+                        android:layout_marginTop="9dp"
+                        android:layout_weight="1"
+                        android:text="长视频"
+                        android:textColor="@android:color/white" />
+
+                    <ImageButton
+                        android:id="@+id/more_image_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:padding="9dp"
+                        android:src="@drawable/more" />
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/screen_short_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right|center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:background="@android:color/transparent"
+                    android:padding="5dp"
+                    android:src="@drawable/screen_short" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:background="#C7000000"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/controller_stop_play"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/play" />
+
+                    <TextView
+                        android:id="@+id/controller_current_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginLeft="4dp"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="4dip"
+                        android:paddingStart="4dip"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <SeekBar
+                        android:id="@+id/controller_progress_bar"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="0dip"
+                        android:layout_height="32dip"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_weight="1" />
+
+                    <TextView
+                        android:id="@+id/controller_end_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="4dip"
+                        android:paddingStart="4dip"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </FrameLayout>
+        </com.qiniu.droid.niuplayer.widget.MediaController>
+
+        <com.qiniu.droid.niuplayer.widget.PlayConfigView
+            android:id="@+id/play_config_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>
