@@ -8,8 +8,8 @@ android {
         applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 11
-        versionName "2.1.3"
+        versionCode 12
+        versionName "2.1.4 "
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
@@ -27,7 +27,7 @@ android {
 }
 
 dependencies {
-    implementation files('libs/pldroid-player-2.1.3.jar')
+    implementation files('libs/pldroid-player-2.1.4.jar')
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'

@@ -18,7 +18,7 @@ import com.pili.pldroid.playerdemo.utils.Utils;
 import com.pili.pldroid.playerdemo.widget.MediaController;
 
 /**
- *  This is a demo activity of PLVideoTextureView
+ * This is a demo activity of PLVideoTextureView
  */
 public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
 
@@ -32,6 +32,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
     private boolean mIsLiveStreaming;
 
     String videoPath;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,10 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
+        }
+        if (!mIsLiveStreaming) {
+            int startPos = getIntent().getIntExtra("start-pos", 0);
+            options.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
         }
         mVideoView.setAVOptions(options);
 
@@ -259,7 +264,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
             mVideoView.setPlaySpeed(0X00010002);
         }
     };
-    
+
     private void updateStatInfo() {
         long bitrate = mVideoView.getVideoBitrate() / 1024;
         final String stat = bitrate + "kbps, " + mVideoView.getVideoFps() + "fps";

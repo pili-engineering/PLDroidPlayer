@@ -11,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox mVideoDataCallback;
     private CheckBox mAudioDataCallback;
     private CheckBox mDisableCheckBox;
+    private RadioButton mLivingCheckBox;
+    private RadioButton mPlayCheckBox;
+    private LinearLayout mStartSetting;
+    private EditText mStartPosEditText;
 
     public static final String[] TEST_ACTIVITY_ARRAY = {
             "PLMediaPlayerActivity",
@@ -69,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mActivitySpinner.setSelection(2);
 
         mVideoCacheCheckBox = findViewById(R.id.CacheCheckBox);
-        mLoopCheckBox =  findViewById(R.id.LoopCheckBox);
+        mLoopCheckBox = findViewById(R.id.LoopCheckBox);
         mVideoDataCallback = findViewById(R.id.VideoCallback);
         mAudioDataCallback = findViewById(R.id.AudioCallback);
         mDisableCheckBox = findViewById(R.id.DisableLog);
@@ -82,6 +88,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mLivingCheckBox = findViewById(R.id.RadioLiveStreaming);
+        mPlayCheckBox = findViewById(R.id.RadioPlayback);
+        mStartSetting = findViewById(R.id.StartSetting);
+
+        mLivingCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mStartSetting.setVisibility(View.INVISIBLE);
+            }
+        });
+        mPlayCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mStartSetting.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mStartPosEditText = findViewById(R.id.TextStartPos);
     }
 
     @Override
@@ -111,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(Intent.createChooser(intent, "选择要导入的视频"), 0);
     }
 
-    public void onClickScanQrcode(View v){
+    public void onClickScanQrcode(View v) {
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setOrientationLocked(true);
@@ -180,6 +205,9 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("video-data-callback", mVideoDataCallback.isChecked());
         intent.putExtra("audio-data-callback", mAudioDataCallback.isChecked());
         intent.putExtra("disable-log", mDisableCheckBox.isChecked());
+        if (!"".equals(mStartPosEditText.getText().toString())) {
+            intent.putExtra("start-pos", Integer.valueOf(mStartPosEditText.getText().toString()));
+        }
         startActivity(intent);
     }
 
@@ -194,10 +222,10 @@ public class MainActivity extends AppCompatActivity {
             if (selectedFilepath != null && !"".equals(selectedFilepath)) {
                 mEditText.setText(selectedFilepath, TextView.BufferType.EDITABLE);
             }
-        } else if (requestCode ==  IntentIntegrator.REQUEST_CODE) {
+        } else if (requestCode == IntentIntegrator.REQUEST_CODE) {
             IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-            if(result != null) {
-                if(result.getContents() == null) {
+            if (result != null) {
+                if (result.getContents() == null) {
                     Toast.makeText(this, "扫码取消！", Toast.LENGTH_SHORT).show();
                 } else {
                     mEditText.setText(result.getContents());
