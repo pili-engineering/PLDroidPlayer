@@ -23,7 +23,7 @@ import com.pili.pldroid.playerdemo.utils.Utils;
 import java.io.IOException;
 
 /**
- *  This demo shows how to use PLMediaPlayer API playing audio stream
+ * This demo shows how to use PLMediaPlayer API playing audio stream
  */
 public class PLAudioPlayerActivity extends AppCompatActivity {
 
@@ -52,6 +52,8 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
         // 1 -> hw codec enable, 0 -> disable [recommended]
         int codec = getIntent().getIntExtra("mediaCodec", 0);
         mAVOptions.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        int startPos = getIntent().getIntExtra("start-pos", 0);
+        mAVOptions.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -171,12 +173,12 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     };
 
     /**
-     *  Listen the event of playing complete
-     *  For playing local file, it's called when reading the file EOF
-     *  For playing network stream, it's called when the buffered bytes played over
-     *
-     *  If setLooping(true) is called, the player will restart automatically
-     *  And ｀onCompletion｀ will not be called
+     * Listen the event of playing complete
+     * For playing local file, it's called when reading the file EOF
+     * For playing network stream, it's called when the buffered bytes played over
+     * <p>
+     * If setLooping(true) is called, the player will restart automatically
+     * And ｀onCompletion｀ will not be called
      */
     private PLOnCompletionListener mOnCompletionListener = new PLOnCompletionListener() {
         @Override

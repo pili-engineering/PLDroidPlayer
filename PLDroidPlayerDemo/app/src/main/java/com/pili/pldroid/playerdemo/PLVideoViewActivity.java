@@ -76,6 +76,10 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         if (acallback) {
             options.setInteger(AVOptions.KEY_AUDIO_DATA_CALLBACK, 1);
         }
+        if (!mIsLiveStreaming) {
+            int startPos = getIntent().getIntExtra("start-pos", 0);
+            options.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
+        }
         mVideoView.setAVOptions(options);
 
         // Set some listeners
@@ -249,7 +253,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 // 19-22:   ts64                        Magic string to mark this stream is from Qiniu
                 // 23-30:   timestamp                   The timestamp
                 // 31:      0x80                        Magic hex in ffmpeg
-                Log.i(TAG,  " timestamp: " + Long.valueOf(bytesToHex(Arrays.copyOfRange(data, 23, 31)), 16));
+                Log.i(TAG, " timestamp: " + Long.valueOf(bytesToHex(Arrays.copyOfRange(data, 23, 31)), 16));
             }
         }
     };
@@ -291,7 +295,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         }
         return new String(hexChars);
     }
-    
+
     private void updateStatInfo() {
         long bitrate = mVideoView.getVideoBitrate() / 1024;
         final String stat = bitrate + "kbps, " + mVideoView.getVideoFps() + "fps";

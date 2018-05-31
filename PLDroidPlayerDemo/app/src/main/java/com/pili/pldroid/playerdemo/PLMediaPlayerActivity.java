@@ -89,6 +89,10 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         }
         mDisableLog = getIntent().getBooleanExtra("disable-log", false);
         mAVOptions.setInteger(AVOptions.KEY_LOG_LEVEL, mDisableLog ? 5 : 0);
+        if (!isLiveStreaming) {
+            int startPos = getIntent().getIntExtra("start-pos", 0);
+            mAVOptions.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
+        }
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
@@ -274,7 +278,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
         @Override
         public void onBufferingUpdate(int percent) {
             Log.d(TAG, "onBufferingUpdate: " + percent + "%");
-            long current =  System.currentTimeMillis();
+            long current = System.currentTimeMillis();
             if (current - mLastUpdateStatTime > 3000) {
                 mLastUpdateStatTime = current;
                 updateStatInfo();
