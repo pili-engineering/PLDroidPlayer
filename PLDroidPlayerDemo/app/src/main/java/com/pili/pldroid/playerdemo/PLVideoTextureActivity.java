@@ -212,7 +212,7 @@ public class PLVideoTextureActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
                     Utils.showToastTips(PLVideoTextureActivity.this, "failed to seek !");
-                    break;
+                    return true;
                 default:
                     Utils.showToastTips(PLVideoTextureActivity.this, "unknown error !");
                     break;

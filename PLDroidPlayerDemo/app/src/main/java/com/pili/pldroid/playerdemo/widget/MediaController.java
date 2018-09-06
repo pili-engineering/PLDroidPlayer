@@ -45,6 +45,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private boolean mShowing;
     private boolean mDragging;
     private boolean mInstantSeeking = true;
+    private long mSeekPosition = 0l;
     private static int sDefaultTimeout = 3000;
     private static final int SEEK_TO_POST_DELAY_MILLIS = 200;
 
@@ -59,17 +60,17 @@ public class MediaController extends FrameLayout implements IMediaController {
 
     private boolean mUseFastForward;
 
-    private static final int IC_MEDIA_PAUSE_ID = Resources.getSystem().getIdentifier("ic_media_pause","drawable", "android");
-    private static final int IC_MEDIA_PLAY_ID = Resources.getSystem().getIdentifier("ic_media_play","drawable", "android");
+    private static final int IC_MEDIA_PAUSE_ID = Resources.getSystem().getIdentifier("ic_media_pause", "drawable", "android");
+    private static final int IC_MEDIA_PLAY_ID = Resources.getSystem().getIdentifier("ic_media_play", "drawable", "android");
     private static final int MEDIA_CONTROLLER_ID = Resources.getSystem().getIdentifier("media_controller", "layout", "android");
-    private static final int PRV_BUTTON_ID = Resources.getSystem().getIdentifier("prev","id", "android");
-    private static final int FFWD_BUTTON_ID = Resources.getSystem().getIdentifier("ffwd","id", "android");
-    private static final int NEXT_BUTTON_ID = Resources.getSystem().getIdentifier("next","id", "android");
-    private static final int REW_BUTTON_ID = Resources.getSystem().getIdentifier("rew","id", "android");
-    private static final int PAUSE_BUTTON_ID = Resources.getSystem().getIdentifier("pause","id", "android");
-    private static final int MEDIACONTROLLER_PROGRESS_ID = Resources.getSystem().getIdentifier("mediacontroller_progress","id", "android");
-    private static final int END_TIME_ID = Resources.getSystem().getIdentifier("time","id", "android");
-    private static final int CURRENT_TIME_ID = Resources.getSystem().getIdentifier("time_current","id", "android");
+    private static final int PRV_BUTTON_ID = Resources.getSystem().getIdentifier("prev", "id", "android");
+    private static final int FFWD_BUTTON_ID = Resources.getSystem().getIdentifier("ffwd", "id", "android");
+    private static final int NEXT_BUTTON_ID = Resources.getSystem().getIdentifier("next", "id", "android");
+    private static final int REW_BUTTON_ID = Resources.getSystem().getIdentifier("rew", "id", "android");
+    private static final int PAUSE_BUTTON_ID = Resources.getSystem().getIdentifier("pause", "id", "android");
+    private static final int MEDIACONTROLLER_PROGRESS_ID = Resources.getSystem().getIdentifier("mediacontroller_progress", "id", "android");
+    private static final int END_TIME_ID = Resources.getSystem().getIdentifier("time", "id", "android");
+    private static final int CURRENT_TIME_ID = Resources.getSystem().getIdentifier("time_current", "id", "android");
 
     private AudioManager mAM;
     private Runnable mLastSeekBarRunnable;
@@ -273,7 +274,7 @@ public class MediaController extends FrameLayout implements IMediaController {
                     }
                     if (!mDragging && mShowing) {
                         msg = obtainMessage(SHOW_PROGRESS);
-                        sendMessageDelayed(msg, 1000 - (pos % 1000));
+                        sendMessageDelayed(msg, 50);
                         updatePausePlay();
                     }
                     break;
@@ -588,5 +589,13 @@ public class MediaController extends FrameLayout implements IMediaController {
             mProgress.setEnabled(enabled);
         disableUnsupportedButtons();
         super.setEnabled(enabled);
+    }
+
+    public PopupWindow getWindow() {
+        return mWindow;
+    }
+
+    public long getSeekPosition() {
+        return mSeekPosition;
     }
 }

@@ -109,6 +109,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        mMediaController.getWindow().dismiss();
         mVideoView.pause();
     }
 
@@ -153,6 +154,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START:
                     Utils.showToastTips(PLVideoViewActivity.this, "first video render time: " + extra + "ms");
+                    Log.i(TAG, "Response: " + mVideoView.getResponseInfo());
                     break;
                 case PLOnInfoListener.MEDIA_INFO_AUDIO_RENDERING_START:
                     break;
@@ -180,6 +182,13 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnInfoListener.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
                     Log.i(TAG, "Rotation changed: " + extra);
+                    break;
+                case PLOnInfoListener.MEDIA_INFO_LOOP_DONE:
+                    Log.i(TAG, "Loop done");
+                    break;
+                case PLOnInfoListener.MEDIA_INFO_CACHE_DOWN:
+                    Log.i(TAG, "Cache done");
+                    break;
                 default:
                     break;
             }
@@ -202,6 +211,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnErrorListener.ERROR_CODE_SEEK_FAILED:
                     Utils.showToastTips(PLVideoViewActivity.this, "failed to seek !");
+                    return true;
+                case PLOnErrorListener.ERROR_CODE_CACHE_FAILED:
+                    Utils.showToastTips(PLVideoViewActivity.this, "failed to cache url !");
                     break;
                 default:
                     Utils.showToastTips(PLVideoViewActivity.this, "unknown error !");
@@ -242,7 +254,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
             Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
-            if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && bytesToHex(Arrays.copyOfRange(data, 19, 23)).equals("ts64")) {
+            if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && bytesToHex(Arrays.copyOfRange(data, 19, 23)).equals("74733634")) {
                 // If the RTMP stream is from Qiniu
                 // Add &addtssei=true to the end of URL to enable SEI timestamp.
                 // Format of the byte array:
