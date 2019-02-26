@@ -32,5 +32,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
-    implementation 'com.bugsnag:bugsnag-android-ndk:1.1.2'  
+    implementation 'com.bugsnag:bugsnag-android-ndk:1.1.2'
 }
