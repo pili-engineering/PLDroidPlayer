@@ -33,7 +33,4 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
     implementation 'com.bugsnag:bugsnag-android-ndk:1.1.2'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.4'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
 }
