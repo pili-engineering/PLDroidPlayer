@@ -62,7 +62,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
-//        options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
+        // options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
@@ -80,6 +80,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             int startPos = getIntent().getIntExtra("start-pos", 0);
             options.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
         }
+        // options.setString(AVOptions.KEY_COMP_DRM_KEY,"cWoosgRk");
         mVideoView.setAVOptions(options);
 
         // Set some listeners
@@ -188,6 +189,12 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                     break;
                 case PLOnInfoListener.MEDIA_INFO_CACHE_DOWN:
                     Log.i(TAG, "Cache done");
+                    break;
+                case PLOnInfoListener.MEDIA_INFO_STATE_CHANGED_PAUSED:
+                    Log.i(TAG, "State paused");
+                    break;
+                case PLOnInfoListener.MEDIA_INFO_STATE_CHANGED_RELEASED:
+                    Log.i(TAG, "State released");
                     break;
                 default:
                     break;
