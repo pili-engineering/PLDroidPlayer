@@ -261,7 +261,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
             Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
-            if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && bytesToHex(Arrays.copyOfRange(data, 19, 23)).equals("74733634")) {
+            if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && size > 0) {
                 // If the RTMP stream is from Qiniu
                 // Add &addtssei=true to the end of URL to enable SEI timestamp.
                 // Format of the byte array:
@@ -272,7 +272,15 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 // 19-22:   ts64                        Magic string to mark this stream is from Qiniu
                 // 23-30:   timestamp                   The timestamp
                 // 31:      0x80                        Magic hex in ffmpeg
-                Log.i(TAG, " timestamp: " + Long.valueOf(bytesToHex(Arrays.copyOfRange(data, 23, 31)), 16));
+                int index = 2;
+                int payloadSize = 0;
+                do {
+                    payloadSize += data[index] & 0xFF;
+                } while (data[index++] == (byte) 0xFF);
+                String uuid = bytesToHex(Arrays.copyOfRange(data, index, index + 16));
+                int length = payloadSize - 16;
+                String content = new String(data, index + 16, length);
+                Log.i(TAG, " SEI data size:" + data.length + " content: " + content + " length = " + length);
             }
         }
     };
