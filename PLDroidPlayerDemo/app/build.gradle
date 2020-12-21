@@ -8,8 +8,8 @@ android {
         applicationId "com.pili.pldroid.playerdemo"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 12
-        versionName "2.1.9"
+        versionCode 13
+        versionName "2.2.0"
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
@@ -21,16 +21,27 @@ android {
 
     sourceSets {
         main {
-            jniLibs.srcDirs = ['src/main/jniLibs']
+            if (!useLibrary) {
+                jniLibs.srcDirs = ['src/main/jniLibs']
+            }
         }
     }
 }
 
 dependencies {
-    implementation files('libs/pldroid-player-2.1.9.jar')
+
+    if (useLibrary) {
+        implementation project(path: ':library')
+    } else {
+        implementation files('libs/pldroid-player-2.2.0.jar')
+    }
+
     implementation 'com.android.support:appcompat-v7:27.1.0'
     implementation 'com.android.support:recyclerview-v7:27.1.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
     implementation 'com.google.zxing:core:3.2.0'
     implementation 'com.bugsnag:bugsnag-android-ndk:1.1.2'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
+    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.4'
 }

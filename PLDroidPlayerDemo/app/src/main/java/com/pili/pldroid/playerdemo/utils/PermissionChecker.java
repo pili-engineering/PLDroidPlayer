@@ -51,6 +51,9 @@ public class PermissionChecker {
         if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             permissionsNeeded.add("Write external storage");
         }
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA)) {
+            permissionsNeeded.add("Camera");
+        }
 
         if (permissionsNeeded.size() > 0) {
             // Need Rationale

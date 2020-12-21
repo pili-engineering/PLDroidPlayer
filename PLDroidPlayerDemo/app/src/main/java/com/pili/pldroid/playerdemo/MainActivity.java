@@ -124,6 +124,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickLocalFile(View v) {
+        if(!isPermissionOK()){
+            return;
+        }
         Intent intent = new Intent();
         if (Build.VERSION.SDK_INT < 19) {
             intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -137,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onClickScanQrcode(View v) {
+        if(!isPermissionOK()){
+            return;
+        }
         IntentIntegrator integrator = new IntentIntegrator(this);
         integrator.setDesiredBarcodeFormats(IntentIntegrator.QR_CODE_TYPES);
         integrator.setOrientationLocked(true);
