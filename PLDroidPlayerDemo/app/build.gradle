@@ -33,7 +33,7 @@ dependencies {
     if (useLibrary) {
         implementation project(path: ':library')
     } else {
-        implementation files('libs/pldroid-player-2.2.0.jar')
+        implementation files('libs/pldroid-player-2.2.1.jar')
     }
 
     implementation 'com.android.support:appcompat-v7:27.1.0'
