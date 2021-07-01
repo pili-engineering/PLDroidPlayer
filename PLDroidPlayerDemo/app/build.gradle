@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 13
-        versionName "2.2.0"
+        versionName "2.2.2"
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
     }
     buildTypes {
@@ -21,8 +21,9 @@ android {
 
     sourceSets {
         main {
-            if (!useLibrary) {
-                jniLibs.srcDirs = ['src/main/jniLibs']
+            jniLibs.srcDirs += ['../../releases/openssl']
+            if (useSo) {
+                jniLibs.srcDirs += ['../../releases/qplayer']
             }
         }
     }
@@ -30,10 +31,14 @@ android {
 
 dependencies {
 
-    if (useLibrary) {
-        implementation project(path: ':library')
+    if (!useJar) {
+        implementation project(path: ':PLDroidPlayer')
     } else {
-        implementation files('libs/pldroid-player-2.2.1.jar')
+        implementation files('../../releases/pldroid-player-2.2.2.jar')
+    }
+
+    if (!useSo) {
+        implementation project(path: ':mediaEngine')
     }
 
     implementation 'com.android.support:appcompat-v7:27.1.0'

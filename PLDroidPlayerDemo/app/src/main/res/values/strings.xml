@@ -21,6 +21,7 @@
     <string name="auto_decode">自动</string>
 
     <string name="cache">离线缓存（mp4点播）</string>
+    <string name="cache_file_name_encode">离线文件名加密</string>
     <string name="loop">循环播放（点播）</string>
     <string name="vcallback">视频数据回调</string>
     <string name="acallback">音频数据回调</string>

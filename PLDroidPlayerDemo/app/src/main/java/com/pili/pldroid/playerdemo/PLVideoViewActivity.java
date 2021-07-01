@@ -68,6 +68,9 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
         }
+
+        boolean cache_filename_encode = getIntent().getBooleanExtra("cache-filename-encode", false);
+        options.setInteger(AVOptions.KEY_CACHE_FILE_NAME_ENCODE, cache_filename_encode ? 1: 0);
         boolean vcallback = getIntent().getBooleanExtra("video-data-callback", false);
         if (vcallback) {
             options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
@@ -260,7 +263,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private PLOnVideoFrameListener mOnVideoFrameListener = new PLOnVideoFrameListener() {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
-            Log.i(TAG, "onVideoFrameAvailable: " + size + ", " + width + " x " + height + ", " + format + ", " + ts);
+            Log.i(TAG, "onVideoFrameAvailable: format=" + format + ", size=" + size + ", data-length="+ data.length + ", " + width + " x " + height + ", time=" + ts + " ,data=" + Arrays.toString(data));
             if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && size > 0) {
                 // If the RTMP stream is from Qiniu
                 // Add &addtssei=true to the end of URL to enable SEI timestamp.
@@ -279,8 +282,11 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 } while (data[index++] == (byte) 0xFF);
                 String uuid = bytesToHex(Arrays.copyOfRange(data, index, index + 16));
                 int length = payloadSize - 16;
-                String content = new String(data, index + 16, length);
-                Log.i(TAG, " SEI data size:" + data.length + " content: " + content + " length = " + length);
+                int start_index = index + 16;
+                if (start_index >= 0 && length > 0 && (start_index + length) <= data.length) {
+                    String content = new String(data, index + 16, length);
+                    Log.i(TAG, " SEI data size:" + data.length + " content: " + content + " length = " + length);
+                }
             }
         }
     };

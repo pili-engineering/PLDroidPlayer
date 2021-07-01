@@ -31,12 +31,14 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
+//    private static final String DEFAULT_TEST_URL = "https://playback-cn.cloudlinks.cn/vas/playback/m3u8?ownerid=9223801851411955728&deviceid=429814557179925&startTime=1623910752&endTime=1623911216&sign=537a6c4b06b5e3e8cc3c091fbea01153726aa615";
 
     private Spinner mActivitySpinner;
     private EditText mEditText;
     private RadioGroup mStreamingTypeRadioGroup;
     private RadioGroup mDecodeTypeRadioGroup;
     private CheckBox mVideoCacheCheckBox;
+    private CheckBox mVideoCacheFileNameEncodeCheckBox;
     private CheckBox mLoopCheckBox;
     private CheckBox mVideoDataCallback;
     private CheckBox mAudioDataCallback;
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         mActivitySpinner.setSelection(2);
 
         mVideoCacheCheckBox = findViewById(R.id.CacheCheckBox);
+        mVideoCacheFileNameEncodeCheckBox = findViewById(R.id.CacheFileNameEncodeCheckBox);
         mLoopCheckBox = findViewById(R.id.LoopCheckBox);
         mVideoDataCallback = findViewById(R.id.VideoCallback);
         mAudioDataCallback = findViewById(R.id.AudioCallback);
@@ -207,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("liveStreaming", 0);
         }
         intent.putExtra("cache", mVideoCacheCheckBox.isChecked());
+        intent.putExtra("cache-filename-encode", mVideoCacheFileNameEncodeCheckBox.isChecked());
         intent.putExtra("loop", mLoopCheckBox.isChecked());
         intent.putExtra("video-data-callback", mVideoDataCallback.isChecked());
         intent.putExtra("audio-data-callback", mAudioDataCallback.isChecked());
