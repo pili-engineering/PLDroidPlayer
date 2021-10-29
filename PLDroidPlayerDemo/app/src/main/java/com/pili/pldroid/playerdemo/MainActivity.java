@@ -30,20 +30,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    //    private static final String DEFAULT_TEST_URL = "https://ms-shortvideo-dn.eebbk.net/bbk-n002/stream/2021/08/06/0830/23240/1a7e74dadc1615e096131578632ca54b.mp4?sign=f4eced8e810da12020bbd4b3ac2fe8b4&t=61371a6d";
-//    private static final String DEFAULT_TEST_URL = "https://playback-cn.cloudlinks.cn/vas/playback/m3u8?ownerid=9223801851411955728&deviceid=429814557179925&startTime=1623910752&endTime=1623911216&sign=537a6c4b06b5e3e8cc3c091fbea01153726aa615";
-//    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
-    //private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/Sync-Footage-V1-H264.mp4";
-//    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/H264-50FPS.mp4";
+  
     private static final String DEFAULT_TEST_URL = "rtmp://pili-rtmp.qnsdk.com/sdk-live/timestam";
-    //private static final String DEFAULT_TEST_URL = "https://ms-shortvideo-dn.eebbk.net/bbk-n002/stream/2021/08/06/0812/26475/b7739de7fe3083d5bcd7f3841c6061c7.mp4?sign=86fac2266c49e6ae53de167bca71285a&t=614ad83e";
-    //private static final String DEFAULT_TEST_URL = "https://img.qunliao.info/4oEGX68t_9505974551.mp4";
-//    private static final String DEFAULT_TEST_URL = "http://pili-media.dearmentor.me/recordings/z1.dreambigcareer.DBC201611172301413076/DBC201611181149382415.m3u8";
-//    private static final String DEFAULT_TEST_URL = "https://live.wzqmt.com/aac_949/sd/live.m3u8";
-//    private st atic final String DEFAULT_TEST_URL = "http://pili-media.dearmentor.me/recordings/z1.dreambigcareer.DBC201611172301413076/DBC201611181149382415.m3u8";
-//    private static final String DEFAULT_TEST_URL = "https://live.wzqmt.com/aac_949/sd/live.m3u8";
-//    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/bbk-bt709.mp4";
-//    private static final String DEFAULT_TEST_URL = "https://ms-shortvideo-dn.eebbk.net/bbk-n002/stream/2021/07/31/1443/19/ed09ae5078b9c3a4d90727eeb779b0e8.mp4?sign=1818596b044c55af373c4f8c9fd95a49&t=616242bd";
 
     private Spinner mActivitySpinner;
     private EditText mEditText;
