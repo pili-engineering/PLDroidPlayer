@@ -4,6 +4,7 @@ package com.qiniu.droid.niuplayer.fragment;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Choreographer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +16,11 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLOnErrorListener;
 import com.pili.pldroid.player.PLOnInfoListener;
+import com.pili.pldroid.player.PLOnVideoFrameListener;
+import com.pili.pldroid.player.widget.PLShortVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.qiniu.droid.niuplayer.R;
 import com.qiniu.droid.niuplayer.model.VideoItem;
@@ -32,19 +36,19 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
     private ViewHolder mCurViewHolder;
     private DisplayImageOptions mDisplayImageOptions;
     private long startsystemtime;
-    private PLVideoTextureView mVideoView;
+    private PLShortVideoTextureView mVideoView;
     private int mCacheStartIndex = -1;
     private int mCacheEndIndex = -1;
     private final static int CACHE_RANGE = 5;
     private HashSet<Integer> mCacheIndexes = new HashSet<Integer>();
+    private AVOptions mAvOption;
 
 
-
-    public ShortVideoListAdapter(ArrayList<VideoItem> arrayList, PLVideoTextureView videoView) {
+    public ShortVideoListAdapter(ArrayList<VideoItem> arrayList, PLShortVideoTextureView videoView) {
         mItemList = arrayList;
         mVideoView = videoView;
-        mVideoView.setAVOptions(createAVOptions());
-
+        mAvOption = createAVOptions();
+        mVideoView.setAVOptions(mAvOption);
 
         mDisplayImageOptions = new DisplayImageOptions.Builder()
                 .showImageOnLoading(R.drawable.defualt_bg)            //加载图片时的图片
@@ -58,7 +62,7 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
 
     class ViewHolder extends RecyclerView.ViewHolder {
         FrameLayout videoViewFrameLayout;
-        PLVideoTextureView videoView;
+        PLShortVideoTextureView videoView;
         ImageView coverImage;
         TextView nameText;
         TextView detailText;
@@ -70,19 +74,27 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
         View holderRootView;
         PLOnErrorListener mPLOnErrorListener = new PLOnErrorListener() {
             @Override
-            public boolean onError(int i) {
+            public boolean onError(int i, Object extraData) {
                Log.d("aa", String.valueOf(i));
                 return false;
             }
         };
         PLOnInfoListener mPLOnInfoListener = new PLOnInfoListener() {
             @Override
-            public void onInfo(int i, int i1) {
+            public void onInfo(int i, int i1, Object extraData) {
                 if (i == PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START) {
                     coverImage.setVisibility(View.GONE);
+                    mVideoView.getTextureView().setAlpha(1.0f);
                     Log.d("ShortVideoListAdapter", "first frame time:" + (System.currentTimeMillis() - startsystemtime) + "ms i1=" + i1 + "ms");
                     changeCache();
                 }
+            }
+        };
+
+        PLOnVideoFrameListener mPLOnVideoFrameListener = new PLOnVideoFrameListener() {
+            @Override
+            public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
+                Log.d("ShortVideo", "video data ts=" + ts);
             }
         };
 
@@ -117,7 +129,7 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
             videoViewFrameLayout.removeView(this.videoView);
         }
 
-        public void onStart(PLVideoTextureView videoView) {
+        public void onStart(PLShortVideoTextureView videoView) {
             this.videoView = videoView;
             FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             lp.gravity = Gravity.CENTER;
@@ -128,6 +140,7 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
 
             this.videoView.setLooping(true);
             this.videoView.setOnInfoListener(mPLOnInfoListener);
+//            this.videoView.setOnVideoFrameListener(mPLOnVideoFrameListener);
             this.videoView.setOnErrorListener(mPLOnErrorListener);
             View loadingView = itemView.findViewById(R.id.loading_view);
             this.videoView.setBufferingIndicator(loadingView);
@@ -179,9 +192,13 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
     public void startCurVideoView() {
         if (mCurViewHolder != null) {
             mCurViewHolder.onStart(mVideoView);
+            mVideoView.stop();
+            mVideoView.setAVOptions(mAvOption);
             mVideoView.setVideoPath(mCurViewHolder.videoPath);
             startsystemtime = System.currentTimeMillis();
-            mVideoView.start();
+            mVideoView.getTextureView().setAlpha(0.0f);
+
+//            mVideoView.start();
             mCurViewHolder.pausePlayImage.setVisibility(View.GONE);
         }
     }
@@ -228,7 +245,7 @@ public class ShortVideoListAdapter extends RecyclerView.Adapter<ShortVideoListAd
 
     public void stopCurVideoView() {
         if (mCurViewHolder != null) {
-            mVideoView.pause();
+            mVideoView.stop();
             mCurViewHolder.coverImage.setVisibility(View.VISIBLE);
         }
     }

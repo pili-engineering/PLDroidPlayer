@@ -234,7 +234,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private PLOnInfoListener mOnInfoListener = new PLOnInfoListener() {
         @Override
-        public void onInfo(int what, int extra) {
+        public void onInfo(int what, int extra, Object extraData) {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
                 case PLOnInfoListener.MEDIA_INFO_BUFFERING_START:
@@ -305,7 +305,7 @@ public class PLMediaPlayerActivity extends VideoPlayerBaseActivity {
 
     private PLOnErrorListener mOnErrorListener = new PLOnErrorListener() {
         @Override
-        public boolean onError(int errorCode) {
+        public boolean onError(int errorCode, Object extraData) {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
                 case PLOnErrorListener.ERROR_CODE_IO_ERROR:

@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.util.Log;
 import android.view.View;
@@ -19,7 +20,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+
 
 public class Utils {
     public static boolean isNetworkAvailable(Context context) {
@@ -130,11 +133,23 @@ public class Utils {
         AVOptions options = new AVOptions();
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+        options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 200);
+        options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION_SPEED_ADJUST, 0);
+        HashMap headers = new HashMap<String,String>();
+        headers.put("Referer","http://video.eebbk.net");
+        options.setHashMap(AVOptions.KEY_HTTP_HEAD_REFER, headers);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
 //        options.setString(AVOptions.KEY_COMP_DRM_KEY, "test123");
         // 1 -> hw codec enable, 0 -> disable [recommended]
-        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_SW_DECODE);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, AVOptions.MEDIA_CODEC_HW_DECODE);
+//        options.setInteger(AVOptions.KEY_VIDEO_RENDER_EXTERNAL_THREAD, 1);
         options.setInteger(AVOptions.KEY_PREFER_FORMAT, AVOptions.PREFER_FORMAT_MP4);
+//        options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
+//        options.setInteger(AVOptions.KEY_VIDEO_RENDER_EXTERNAL, 1);
+//        options.setInteger(AVOptions.KEY_START_POSITION, 10 * 1000);
+//        options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
+
+
         boolean disableLog = false;
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
         return options;

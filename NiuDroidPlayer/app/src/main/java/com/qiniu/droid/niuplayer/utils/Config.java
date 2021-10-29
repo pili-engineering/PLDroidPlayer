@@ -14,4 +14,6 @@ public class Config {
     public static final String LIVE_TEST_URL = "rtmp://live.hkstv.hk.lxdns.com/live/hks";
     public static final String UPGRADE_URL_PREFIX = "https://api-demo.qnsdk.com/v1/upgrade/app?appId=";
 
+    public static final String DEFAULT_CACHE_DIR = SDCARD_DIR + "/NiuDroidPlayer";
+
 }

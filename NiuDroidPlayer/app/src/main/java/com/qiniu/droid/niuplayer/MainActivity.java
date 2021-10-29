@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import com.bugsnag.android.Bugsnag;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiskCache;
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         setContentView(com.qiniu.droid.niuplayer.R.layout.activity_main);
-        Bugsnag.init(this);
         isStoragePermissionOK();
         initImageLoader();
         initView();
