@@ -30,6 +30,11 @@ public class VideoItem implements Serializable {
         mTime = stampToDate(time);
     }
 
+    public void setVideoPath(String name) {
+        this.mVideoPath = VIDEO_PATH_PREFIX + name;
+        this.mName = getVideoName(name);
+    }
+
     public String getName() {
         return mName;
     }

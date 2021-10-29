@@ -1,5 +1,6 @@
 package com.qiniu.droid.niuplayer.fragment;
 
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.player.PLOnPreparedListener;
+import com.pili.pldroid.player.PLOnSeekCompleteListener;
+import com.pili.pldroid.player.widget.PLShortVideoTextureView;
 import com.pili.pldroid.player.widget.PLVideoTextureView;
 import com.qiniu.droid.niuplayer.R;
 import com.qiniu.droid.niuplayer.model.VideoItem;
@@ -24,7 +29,7 @@ public class ShortVideoListFragment extends Fragment implements FragmentLifecycl
     private RecyclerView mVideoList;
     private ArrayList<VideoItem> mItemList;
     private ShortVideoListAdapter mShortVideoListAdapter;
-    private PLVideoTextureView mVideoView;
+    private PLShortVideoTextureView mVideoView;
     private volatile boolean mShouldPlay;
     private int mCurrentPosition = -1;
 
@@ -41,6 +46,11 @@ public class ShortVideoListFragment extends Fragment implements FragmentLifecycl
             @Override
             public void onSuccess(int statusCode, Object data) {
                 mItemList = (ArrayList<VideoItem>) data;
+//                mItemList = new ArrayList<VideoItem>();
+//                VideoItem item = ((ArrayList<VideoItem>) data).get(0);
+//                item.setVideoPath("http://pili-live-hdl.artlive.artron.net/artepresscs/artstream74167.flv");
+//                mItemList.add(item);
+//                mItemList.add(((ArrayList<VideoItem>) data).get(1));
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -70,7 +80,15 @@ public class ShortVideoListFragment extends Fragment implements FragmentLifecycl
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(mVideoList);
 
-        mVideoView = new PLVideoTextureView(getContext());
+        mVideoView = new PLShortVideoTextureView(getContext());
+
+        mVideoView.setOnPreparedListener(new PLOnPreparedListener() {
+
+            @Override
+            public void onPrepared(int preparedTime) {
+                mVideoView.start();
+            }
+        });
 
         mShortVideoListAdapter = new ShortVideoListAdapter(mItemList, mVideoView);
         mVideoList.setAdapter(mShortVideoListAdapter);
@@ -102,6 +120,8 @@ public class ShortVideoListFragment extends Fragment implements FragmentLifecycl
             mShortVideoListAdapter.stopCurVideoView();
         }
     }
+
+
 
     @Override
     public void onFragmentPause() {
@@ -137,6 +157,7 @@ public class ShortVideoListFragment extends Fragment implements FragmentLifecycl
     public void onActivityDestroy() {
         if (mShortVideoListAdapter != null) {
             mShortVideoListAdapter.stopCurVideoView();
+            mVideoView.stopPlayback();
         }
     }
 

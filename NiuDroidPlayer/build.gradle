@@ -23,3 +23,10 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+
+
+ext {
+    useJar = true
+    useSo = true
+}

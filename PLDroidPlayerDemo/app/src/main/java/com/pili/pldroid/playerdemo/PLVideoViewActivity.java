@@ -1,6 +1,7 @@
 package com.pili.pldroid.playerdemo;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import com.pili.pldroid.player.PLOnBufferingUpdateListener;
 import com.pili.pldroid.player.PLOnCompletionListener;
 import com.pili.pldroid.player.PLOnErrorListener;
 import com.pili.pldroid.player.PLOnInfoListener;
+import com.pili.pldroid.player.PLOnSeekCompleteListener;
 import com.pili.pldroid.player.PLOnVideoFrameListener;
 import com.pili.pldroid.player.PLOnVideoSizeChangedListener;
 import com.pili.pldroid.player.widget.PLVideoView;
@@ -20,6 +22,7 @@ import com.pili.pldroid.playerdemo.widget.MediaController;
 import com.pili.pldroid.playerdemo.widget.MediaController.OnClickSpeedAdjustListener;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * This is a demo activity of PLVideoView
@@ -32,7 +35,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private TextView mStatInfoTextView;
     private MediaController mMediaController;
-
+    private int recordTime = 0;
     private boolean mIsLiveStreaming;
 
     @Override
@@ -54,16 +57,25 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mStatInfoTextView = findViewById(R.id.StatInfoTextView);
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
-        int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_SW_DECODE);
+        int codec = getIntent().getIntExtra("mediaCodec", AVOptions.MEDIA_CODEC_HW_DECODE);
         AVOptions options = new AVOptions();
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+        HashMap headers = new HashMap<String,String>();
+        headers.put("Referer","http://video.eebbk.net");
+        options.setHashMap(AVOptions.KEY_HTTP_HEAD_REFER, headers);
+        options.setInteger(AVOptions.KEY_SEEK_MODE, 1);
+
         // 1 -> hw codec enable, 0 -> disable [recommended]
         options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
-        // options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
+         // options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
         options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
+        options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 200);
+        options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION_SPEED_ADJUST, 0);
+//        options.setInteger(AVOptions.KEY_MEDIA_TYPE, 3);
+//        options.setInteger(AVOptions.KEY_VIDEO_RENDER_EXTERNAL_THREAD, 1);
         boolean cache = getIntent().getBooleanExtra("cache", false);
         if (!mIsLiveStreaming && cache) {
             options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
@@ -83,6 +95,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
             int startPos = getIntent().getIntExtra("start-pos", 0);
             options.setInteger(AVOptions.KEY_START_POSITION, startPos * 1000);
         }
+
         // options.setString(AVOptions.KEY_COMP_DRM_KEY,"cWoosgRk");
         mVideoView.setAVOptions(options);
 
@@ -94,7 +107,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         mVideoView.setOnErrorListener(mOnErrorListener);
         mVideoView.setOnVideoFrameListener(mOnVideoFrameListener);
         mVideoView.setOnAudioFrameListener(mOnAudioFrameListener);
-
+        mVideoView.setOnSeekCompleteListener(mOnSeekFrameListener);
         mVideoView.setVideoPath(videoPath);
         mVideoView.setLooping(getIntent().getBooleanExtra("loop", false));
 
@@ -149,7 +162,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
     private PLOnInfoListener mOnInfoListener = new PLOnInfoListener() {
         @Override
-        public void onInfo(int what, int extra) {
+        public void onInfo(int what, int extra, Object extraData) {
             Log.i(TAG, "OnInfo, what = " + what + ", extra = " + extra);
             switch (what) {
                 case PLOnInfoListener.MEDIA_INFO_BUFFERING_START:
@@ -207,7 +220,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
 
     private PLOnErrorListener mOnErrorListener = new PLOnErrorListener() {
         @Override
-        public boolean onError(int errorCode) {
+        public boolean onError(int errorCode, Object extraData) {
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
             switch (errorCode) {
                 case PLOnErrorListener.ERROR_CODE_IO_ERROR:
@@ -295,6 +308,32 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         @Override
         public void onAudioFrameAvailable(byte[] data, int size, int samplerate, int channels, int datawidth, long ts) {
             Log.i(TAG, "onAudioFrameAvailable: " + size + ", " + samplerate + ", " + channels + ", " + datawidth + ", " + ts);
+        }
+    };
+
+    private Runnable mCurrentPositionRunable = new Runnable() {
+        @Override
+        public void run() {
+            long position = mVideoView.getCurrentPosition();
+            Log.i(TAG, "post delay current time=" + position);
+            if (recordTime < 100) {
+                mStatInfoTextView.postDelayed(this, 30);
+            } else {
+                recordTime = 0;
+            }
+            recordTime++;
+
+        }
+    };
+
+    private PLOnSeekCompleteListener mOnSeekFrameListener = new PLOnSeekCompleteListener() {
+
+        @Override
+        public void onSeekComplete() {
+            long position = mVideoView.getCurrentPosition();
+            Log.i(TAG, "onSeekComplete: current time=" + position);
+            mStatInfoTextView.postDelayed(mCurrentPositionRunable, 30);
+
         }
     };
 

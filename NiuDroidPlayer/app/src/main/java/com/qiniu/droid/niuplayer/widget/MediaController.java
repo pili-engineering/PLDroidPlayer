@@ -424,6 +424,7 @@ public class MediaController extends FrameLayout implements IMediaController {
                 mLastSeekBarRunnable = new Runnable() {
                     @Override
                     public void run() {
+                        Log.i(TAG, "start seek: current time=" + mPlayer.getCurrentPosition());
                         mPlayer.seekTo(newposition);
                     }
                 };
@@ -434,8 +435,11 @@ public class MediaController extends FrameLayout implements IMediaController {
         }
 
         public void onStopTrackingTouch(SeekBar bar) {
-            if (!mInstantSeeking)
+            if (!mInstantSeeking) {
+                Log.i(TAG, "start seek: current time=" + mPlayer.getCurrentPosition());
                 mPlayer.seekTo(mDuration * bar.getProgress() / 1000);
+            }
+
 
             show(sDefaultTimeout);
             mHandler.removeMessages(SHOW_PROGRESS);

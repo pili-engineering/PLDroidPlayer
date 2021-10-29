@@ -80,7 +80,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
             videoView.setLooping(true);
             videoView.setOnInfoListener(new PLOnInfoListener() {
                 @Override
-                public void onInfo(int i, int i1) {
+                public void onInfo(int i, int i1, Object extraData) {
                     if (i == PLOnInfoListener.MEDIA_INFO_VIDEO_RENDERING_START) {
                         coverImage.setVisibility(View.GONE);
                         stopPlayImage.setVisibility(View.GONE);
