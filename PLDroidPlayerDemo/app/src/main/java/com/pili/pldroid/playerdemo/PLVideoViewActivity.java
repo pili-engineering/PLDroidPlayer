@@ -61,9 +61,6 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         AVOptions options = new AVOptions();
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
-        HashMap headers = new HashMap<String,String>();
-        headers.put("Referer","http://video.eebbk.net");
-        options.setHashMap(AVOptions.KEY_HTTP_HEAD_REFER, headers);
         options.setInteger(AVOptions.KEY_SEEK_MODE, 1);
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
