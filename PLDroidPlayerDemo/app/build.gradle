@@ -9,8 +9,13 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 13
-        versionName "2.2.3"
+        versionName "2.3.0"
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
+
+        ndk {
+            abiFilters 'armeabi-v7a','arm64-v8a','x86'
+//            abiFilters 'armeabi-v7a'
+        }
     }
     buildTypes {
         release {
@@ -34,7 +39,7 @@ dependencies {
     if (!useJar) {
         implementation project(path: ':PLDroidPlayer')
     } else {
-        implementation files('../../releases/pldroid-player-2.2.3.jar')
+        implementation files('../../releases/pldroid-player-2.3.0.jar')
     }
 
     if (!useSo) {

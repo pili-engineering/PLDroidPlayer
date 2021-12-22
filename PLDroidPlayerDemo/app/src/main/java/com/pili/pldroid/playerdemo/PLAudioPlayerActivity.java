@@ -122,6 +122,7 @@ public class PLAudioPlayerActivity extends AppCompatActivity {
     private void prepare() {
         if (mMediaPlayer == null) {
             mMediaPlayer = new PLMediaPlayer(getApplicationContext(), mAVOptions);
+            mMediaPlayer.setVideoEnabled(false);
             mMediaPlayer.setLooping(getIntent().getBooleanExtra("loop", false));
             mMediaPlayer.setOnPreparedListener(mOnPreparedListener);
             mMediaPlayer.setOnCompletionListener(mOnCompletionListener);

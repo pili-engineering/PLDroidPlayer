@@ -30,8 +30,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-  
-    private static final String DEFAULT_TEST_URL = "rtmp://pili-rtmp.qnsdk.com/sdk-live/timestam";
+
+    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
 
     private Spinner mActivitySpinner;
     private EditText mEditText;
