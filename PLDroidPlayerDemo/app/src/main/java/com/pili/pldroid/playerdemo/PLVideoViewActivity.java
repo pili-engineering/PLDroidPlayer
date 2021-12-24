@@ -61,6 +61,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         AVOptions options = new AVOptions();
         // the unit of timeout is ms
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 10 * 1000);
+//        options.setInteger(AVOptions.KEY_VIDEO_DISABLE, 1);
         options.setInteger(AVOptions.KEY_SEEK_MODE, 1);
 
         // 1 -> hw codec enable, 0 -> disable [recommended]
