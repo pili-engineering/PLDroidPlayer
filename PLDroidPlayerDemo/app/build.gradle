@@ -9,7 +9,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 13
-        versionName "2.3.0"
+        versionName "2.4.0"
         buildConfigField "long", "BUILD_TIMESTAMP", System.currentTimeMillis() + "L"
 
         ndk {
@@ -39,7 +39,7 @@ dependencies {
     if (!useJar) {
         implementation project(path: ':PLDroidPlayer')
     } else {
-        implementation files('../../releases/pldroid-player-2.3.0.jar')
+        implementation files('../../releases/pldroid-player-2.4.0.jar')
     }
 
     if (!useSo) {

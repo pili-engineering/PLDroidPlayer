@@ -69,7 +69,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, mIsLiveStreaming ? 1 : 0);
         boolean disableLog = getIntent().getBooleanExtra("disable-log", false);
          // options.setString(AVOptions.KEY_DNS_SERVER, "127.0.0.1");
-        options.setInteger(AVOptions.KEY_LOG_LEVEL, disableLog ? 5 : 0);
+        options.setInteger(AVOptions.KEY_LOG_LEVEL, -1);
         options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 200);
         options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION_SPEED_ADJUST, 0);
 //        options.setInteger(AVOptions.KEY_MEDIA_TYPE, 3);
@@ -274,7 +274,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private PLOnVideoFrameListener mOnVideoFrameListener = new PLOnVideoFrameListener() {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
-            Log.i(TAG, "onVideoFrameAvailable: format=" + format + ", size=" + size + ", data-length="+ data.length + ", " + width + " x " + height + ", time=" + ts + " ,data=" + Arrays.toString(data));
+//            Log.i(TAG, "onVideoFrameAvailable: format=" + format + ", size=" + size + ", data-length="+ data.length + ", " + width + " x " + height + ", time=" + ts + " ,data=" + Arrays.toString(data));
             if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && size > 0) {
                 // If the RTMP stream is from Qiniu
                 // Add &addtssei=true to the end of URL to enable SEI timestamp.
@@ -286,18 +286,18 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
                 // 19-22:   ts64                        Magic string to mark this stream is from Qiniu
                 // 23-30:   timestamp                   The timestamp
                 // 31:      0x80                        Magic hex in ffmpeg
-                int index = 2;
-                int payloadSize = 0;
-                do {
-                    payloadSize += data[index] & 0xFF;
-                } while (data[index++] == (byte) 0xFF);
-                String uuid = bytesToHex(Arrays.copyOfRange(data, index, index + 16));
-                int length = payloadSize - 16;
-                int start_index = index + 16;
-                if (start_index >= 0 && length > 0 && (start_index + length) <= data.length) {
-                    String content = new String(data, index + 16, length);
-                    Log.i(TAG, " SEI data size:" + data.length + " content: " + content + " length = " + length);
-                }
+//                int index = 2;
+//                int payloadSize = 0;
+//                do {
+//                    payloadSize += data[index] & 0xFF;
+//                } while (data[index++] == (byte) 0xFF);
+//                String uuid = bytesToHex(Arrays.copyOfRange(data, index, index + 16));
+//                int length = payloadSize - 16;
+//                int start_index = index + 16;
+//                if (start_index >= 0 && length > 0 && (start_index + length) <= data.length) {
+//                    String content = new String(data, index + 16, length);
+//                    Log.i(TAG, " SEI data size:" + data.length + " content: " + content + " length = " + length);
+//                }
             }
         }
     };

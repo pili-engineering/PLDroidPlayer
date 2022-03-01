@@ -31,7 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
+//    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
+    private static final String DEFAULT_TEST_URL = "rtmp://pili-publish.qnsdk.com/sdk-live/6666";
+
 
     private Spinner mActivitySpinner;
     private EditText mEditText;
@@ -53,7 +55,8 @@ public class MainActivity extends AppCompatActivity {
             "PLAudioPlayerActivity",
             "PLVideoViewActivity",
             "PLVideoTextureActivity",
-            "MultiInstanceActivity"
+            "MultiInstanceActivity",
+            "ChangeActivity"
     };
 
     @Override
@@ -191,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4:
                 cls = MultiInstanceActivity.class;
+                break;
+            case 5:
+                cls = ChangeActivity.class;
                 break;
             default:
                 return;
