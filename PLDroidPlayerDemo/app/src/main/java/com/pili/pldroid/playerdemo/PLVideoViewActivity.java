@@ -274,7 +274,7 @@ public class PLVideoViewActivity extends VideoPlayerBaseActivity {
     private PLOnVideoFrameListener mOnVideoFrameListener = new PLOnVideoFrameListener() {
         @Override
         public void onVideoFrameAvailable(byte[] data, int size, int width, int height, int format, long ts) {
-//            Log.i(TAG, "onVideoFrameAvailable: format=" + format + ", size=" + size + ", data-length="+ data.length + ", " + width + " x " + height + ", time=" + ts + " ,data=" + Arrays.toString(data));
+            Log.i(TAG, "onVideoFrameAvailable: format=" + format + ", size=" + size + ", data-length="+ data.length + ", " + width + " x " + height + ", time=" + ts + " ,data=" + Arrays.toString(data));
             if (format == PLOnVideoFrameListener.VIDEO_FORMAT_SEI && size > 0) {
                 // If the RTMP stream is from Qiniu
                 // Add &addtssei=true to the end of URL to enable SEI timestamp.
