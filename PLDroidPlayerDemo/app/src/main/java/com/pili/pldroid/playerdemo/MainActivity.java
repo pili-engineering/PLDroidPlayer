@@ -31,10 +31,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-//    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
-    private static final String DEFAULT_TEST_URL = "rtmp://pili-publish.qnsdk.com/sdk-live/6666";
-
-
+    private static final String DEFAULT_TEST_URL = "http://demo-videos.qnsdk.com/movies/qiniu.mp4";
+//private static final String DEFAULT_TEST_URL = "https://sdk-release.qnsdk.com/10037108_065355-hd%20%281%29.mp4";
+//        private static final String DEFAULT_TEST_URL = "rtmp://pili-publish.qnsdk.com/sdk-live/6666";
+//    private static final String DEFAULT_TEST_URL = "https://playback-vpaas.cloudlinks.cn/vas/playback/m3u8?ownerid=9223372043327116262&deviceid=4689236446&startTime=1648088707&endTime=1648088968&sign=5bb74cbbecc053f3c954ecf75c4ed2df7cf7d3a2&port=39849";
+//    private static final String DEFAULT_TEST_URL = "http://cdn.qiniushawn.top/timeshift3.m3u8";
+    //private static final String DEFAULT_TEST_URL = "http://ojpjb7lbl.bkt.clouddn.com/h265/2000k/265_test.m3u8";
     private Spinner mActivitySpinner;
     private EditText mEditText;
     private RadioGroup mStreamingTypeRadioGroup;

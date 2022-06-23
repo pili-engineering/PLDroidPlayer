@@ -136,7 +136,7 @@ public class Utils {
         options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 200);
         options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION_SPEED_ADJUST, 0);
         HashMap headers = new HashMap<String,String>();
-        headers.put("Referer","http://video.eebbk.net");
+//        headers.put("Referer","http://video.eebbk.net");
         options.setHashMap(AVOptions.KEY_HTTP_HEAD_REFER, headers);
         options.setInteger(AVOptions.KEY_LIVE_STREAMING, 0);
 //        options.setString(AVOptions.KEY_COMP_DRM_KEY, "test123");
@@ -147,7 +147,7 @@ public class Utils {
 //        options.setInteger(AVOptions.KEY_VIDEO_DATA_CALLBACK, 1);
 //        options.setInteger(AVOptions.KEY_VIDEO_RENDER_EXTERNAL, 1);
 //        options.setInteger(AVOptions.KEY_START_POSITION, 10 * 1000);
-//        options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
+        options.setString(AVOptions.KEY_CACHE_DIR, Config.DEFAULT_CACHE_DIR);
 
 
         boolean disableLog = false;
