@@ -1,3 +1,11 @@
+# 停更通知
+
+PLDroidPlayer 将不再更新，如需继续使用七牛的播放器产品，请移步QPlayer2， QPlayer2将带来全新的播放体验 
+
+IOS:https://github.com/pili-engineering/QPlayer2-IOS 
+
+Android：https://github.com/pili-engineering/QPlayer2-Android
+
 # PLDroidPlayer
 
 PLDroidPlayer 是一个适用于 Android 平台的音视频播放器 SDK，可高度定制化和二次开发，为 Android 开发者提供了简单、快捷的接口，帮助开发者在 Android 平台上快速开发播放器应用。
